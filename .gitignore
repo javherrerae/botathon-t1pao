@@ -6,3 +6,6 @@
 backend/.venv/
 parametros_config.json
 parametros_historial.json
+backend/entrada_blueprism/
+Resultados_*.xlsx
+backend/excepciones_multi_instituto.json

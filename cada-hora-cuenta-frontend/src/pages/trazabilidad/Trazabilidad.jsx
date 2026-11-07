@@ -24,13 +24,15 @@ function Trazabilidad() {
   const [filtroEstado, setFiltroEstado] = useState('')
   const [filtroTipo, setFiltroTipo] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
   const [actualizando, setActualizando] = useState(null)
   const [page, setPage] = useState(1)
 
   const cargar = (params = {}) => {
     setCargando(true)
     obtenerNovedades(params)
-      .then((r) => setNovedades(r.novedades ?? []))
+      .then((r) => { setError(''); setNovedades(r.novedades ?? []) })
+      .catch((e) => setError(e.message))
       .finally(() => setCargando(false))
   }
 
@@ -38,6 +40,7 @@ function Trazabilidad() {
     let vigente = true
     obtenerNovedades()
       .then((r) => { if (vigente) setNovedades(r.novedades ?? []) })
+      .catch((e) => { if (vigente) setError(e.message) })
       .finally(() => { if (vigente) setCargando(false) })
     return () => { vigente = false }
   }, [])
@@ -74,12 +77,13 @@ function Trazabilidad() {
           <p className="text-sm font-semibold text-[#003366]">MÓDULO</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-900">Novedades y Trazabilidad</h1>
           <p className="mt-1 text-slate-500">
-            Cambios detectados por Blue Prism que requieren validación.
+            Novedades contractuales simuladas: Blue Prism todavía no entrega este reporte.
           </p>
         </div>
-        {pendientes > 0 && <Badge type="warning">{pendientes} pendiente(s)</Badge>}
+<div className="flex items-center gap-2"><Badge type="warning">Datos de demostración</Badge>{pendientes > 0 && <Badge type="warning">{pendientes} pendiente(s)</Badge>}</div>
       </div>
 
+      {error && <p role="alert" className="rounded-lg bg-red-50 p-4 text-red-800">No se pudo consultar FastAPI: {error}</p>}
       {/* Filtros */}
       <div className="flex flex-wrap gap-3">
         <select

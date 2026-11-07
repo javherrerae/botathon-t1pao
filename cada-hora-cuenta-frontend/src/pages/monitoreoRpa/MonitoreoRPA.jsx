@@ -14,11 +14,13 @@ function MonitoreoRPA() {
   const [erroresSeleccionados, setErroresSeleccionados] = useState([])
   const [ejecucionActiva, setEjecucionActiva] = useState(null)
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
   const [cargandoErrores, setCargandoErrores] = useState(false)
 
   useEffect(() => {
     obtenerEjecuciones()
       .then((r) => setEjecuciones(r.ejecuciones ?? []))
+      .catch((e) => setError(e.message))
       .finally(() => setCargando(false))
   }, [])
 
@@ -28,21 +30,25 @@ function MonitoreoRPA() {
     try {
       const r = await obtenerErroresEjecucion(ej.ejecucionId)
       setErroresSeleccionados(r.errores ?? [])
+    } catch (e) {
+      setError(e.message)
     } finally {
       setCargandoErrores(false)
     }
   }
 
   if (cargando) return <p className="text-slate-500">Cargando ejecuciones…</p>
+  if (error) return <p role="alert" className="rounded-lg bg-red-50 p-4 text-red-800">Error al consultar FastAPI: {error}. Revisa el servidor y recarga la página.</p>
 
   return (
     <section className="space-y-6">
       <div>
         <p className="text-sm font-semibold text-[#003366]">MÓDULO</p>
         <h1 className="mt-1 text-2xl font-bold text-slate-900">Monitoreo Blue Prism</h1>
-        <p className="mt-1 text-slate-500">Supervisión de archivos procesados por el bot.</p>
+        <p className="mt-1 text-slate-500">Supervisión de archivos BUK procesados. Recarga la página tras recibir un nuevo Excel.</p>
       </div>
 
+      {ejecuciones.length === 0 && <p className="rounded-lg bg-slate-50 p-4 text-slate-600">No se han registrado ejecuciones.</p>}
       {/* Tarjetas de ejecuciones */}
       {ejecuciones.map((ej) => {
         const cfg = ESTADO_CONFIG[ej.estado] ?? { type: 'default', label: ej.estado }
@@ -57,7 +63,7 @@ function MonitoreoRPA() {
                 <h2 className="mt-1 text-lg font-semibold text-slate-900">{ej.archivo}</h2>
                 <p className="text-sm text-slate-500">Fuente: {ej.fuente} · {new Date(ej.fechaHora).toLocaleString('es-CL')}</p>
               </div>
-              <Badge type={cfg.type}>{cfg.label}</Badge>
+              <div className="flex items-center gap-2"><Badge type={ej.ejecucionId?.startsWith('EJ-BP-') ? 'success' : 'warning'}>{ej.ejecucionId?.startsWith('EJ-BP-') ? 'Excel real' : 'Demo'}</Badge><Badge type={cfg.type}>{cfg.label}</Badge></div>
             </div>
 
             <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4">

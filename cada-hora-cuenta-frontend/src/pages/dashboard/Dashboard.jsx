@@ -9,6 +9,7 @@ function Dashboard() {
   const [resumen, setResumen] = useState(null)
   const [institutos, setInstitutos] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([obtenerResumenNacional(), obtenerInstitutos()])
@@ -16,8 +17,11 @@ function Dashboard() {
         setResumen(res)
         setInstitutos(inst)
       })
+      .catch((e) => setError(e.message))
       .finally(() => setCargando(false))
   }, [])
+
+  if (error) return <p role="alert" className="rounded-lg bg-red-50 p-4 text-red-800">No se pudo conectar con FastAPI: {error}</p>
 
   if (cargando || !resumen) {
     return (
@@ -39,15 +43,15 @@ function Dashboard() {
       icon: Clock,
     },
     {
-      title: 'Atenciones proyectadas anuales',
-      value: resumen.atencionesAnualesProyectadas.toLocaleString('es-CL'),
-      description: 'Proyección nacional basada en Bot',
+      title: 'Atenciones acumuladas',
+      value: resumen.atencionesAcumuladas.toLocaleString('es-CL'),
+      description: 'Suma de períodos procesados',
       icon: CalendarCheck,
     },
     {
-      title: 'Meta gestión nacional',
-      value: resumen.metaGestionNacional.toLocaleString('es-CL'),
-      description: 'Meta de referencia (90%)',
+      title: 'Meta de gestión acumulada',
+      value: Math.round(resumen.metaGestionAcumulada).toLocaleString('es-CL'),
+      description: 'Suma de metas de los meses procesados',
       icon: Target,
     },
     {
@@ -72,10 +76,10 @@ function Dashboard() {
           <p className="text-sm font-semibold text-[#003366]">TELETÓN · GESTIÓN NACIONAL</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-900">Dashboard nacional</h1>
           <p className="mt-1 text-slate-500">
-            Periodo: {resumen.periodoUltimo?.slice(0, 7)} · datos Blue Prism simulados
+            Último período: {resumen.periodoUltimo?.slice(0, 7)} · {resumen.periodosProcesados} mes(es) procesado(s)
           </p>
         </div>
-        <Badge type="warning">Datos simulados</Badge>
+        <Badge type={resumen.datosSimulados ? 'warning' : 'success'}>{resumen.datosSimulados ? 'Datos simulados' : 'Salida Blue Prism importada'}</Badge>
       </div>
 
       <section aria-label="Indicadores nacionales" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

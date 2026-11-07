@@ -5,7 +5,7 @@ Alimenta el Dashboard y la vista de Planificación.
 """
 from fastapi import APIRouter, Query
 from typing import Optional
-from data_loader import get_resumen_instituto
+from data_loader import get_resumen_instituto, get_resultados, get_meta
 
 router = APIRouter(prefix="/api/resumen-instituto", tags=["Resumen Instituto"])
 
@@ -24,48 +24,45 @@ def listar_resumen(
     return {"total": len(datos), "resumen": datos}
 
 
+# UTILIZAR ESTE ARCHIVO SOLO COMO MODULO DE REEMPLAZO DE FUNCION via aplicar_cambios.py
 @router.get("/nacional")
 def resumen_nacional():
-    """
-    KPIs nacionales agregados: horas, atenciones, meta.
-    Usado por el Dashboard principal.
+    """KPIs del último mes + sumas de los meses realmente procesados.
+
+    NO se extrapolan automáticamente los meses futuros ni se confunden atenciones con FOJA.
     """
     datos = get_resumen_instituto()
-
-    # Tomamos el último periodo disponible para los totales
-    periodos = sorted({d["periodo"] for d in datos})
-    ultimo_periodo = periodos[-1] if periodos else None
-    datos_ultimo = [d for d in datos if d["periodo"] == ultimo_periodo] if ultimo_periodo else datos
-
-    horas_totales = sum(d.get("horasContrato", 0) for d in datos_ultimo)
-    atenciones_directas = sum(d.get("atencionesDirectas", 0) for d in datos_ultimo)
-    atenciones_indirectas = sum(d.get("atencionesIndirectas", 0) for d in datos_ultimo)
-    atenciones_total = sum(d.get("atencionesTotal", 0) for d in datos_ultimo)
-    meta_gestion = sum(d.get("metaGestion", 0) for d in datos_ultimo)
-    profesionales = sum(d.get("profesionales", 0) for d in datos_ultimo)
-    excepciones = sum(d.get("excepciones", 0) for d in datos_ultimo)
-    institutos_count = len({d["instituto"] for d in datos_ultimo})
-
-    # Proyección anual simple: multiplicamos por 12 (el bot procesa mes a mes)
-    periodos_count = len(periodos) if periodos else 1
-    atenciones_anuales = round(atenciones_total * (12 / periodos_count))
-    meta_anual = round(meta_gestion * (12 / periodos_count))
-
+    resultados = get_resultados()
+    periodos = sorted({d['periodo'] for d in datos})
+    ultimo = periodos[-1] if periodos else None
+    recientes = [d for d in datos if d['periodo'] == ultimo]
+    resultados_recientes = [r for r in resultados
+                           if r.get('periodo') == ultimo and r.get('estado') == 'COMPLETADO'
+                           and r.get('pctDirecto') is not None and r.get('horasContrato') is not None]
+    denominador = sum(r['horasContrato'] for r in resultados_recientes)
+    numerador = sum(r['horasContrato'] * r['pctDirecto'] for r in resultados_recientes)
+    # Promedio ponderado sobre las jornadas calculadas (sin contar las excepciones como FOJA=0).
+    foja = round(100 * numerador / denominador, 1) if denominador else 0
+    acumuladas = sum(d.get('atencionesTotal', 0) for d in datos)
+    metas = sum(d.get('metaGestion', 0) for d in datos)
     return {
-        "periodoUltimo": ultimo_periodo,
-        "institutosContabilizados": institutos_count,
-        "profesionales": profesionales,
-        "horasSemanalesTotales": horas_totales,
-        "atencionesUltimoPeriodo": atenciones_total,
-        "atencionesDirectas": atenciones_directas,
-        "atencionesIndirectas": atenciones_indirectas,
-        "metaGestionUltimoPeriodo": meta_gestion,
-        "atencionesAnualesProyectadas": atenciones_anuales,
-        "metaGestionNacional": meta_anual,
-        "fojaPromedioNacional": round(
-            atenciones_total / meta_gestion * 100 if meta_gestion else 0, 1
-        ),
-        "excepciones": excepciones,
+        'periodoUltimo': ultimo,
+        'periodosProcesados': len(periodos),
+        'institutosContabilizados': len({d['instituto'] for d in recientes}),
+        'profesionales': sum(d.get('profesionales',0) for d in recientes),
+        'horasSemanalesTotales': sum(d.get('horasContrato',0) for d in recientes),
+        'atencionesUltimoPeriodo': sum(d.get('atencionesTotal',0) for d in recientes),
+        'atencionesDirectas': sum(d.get('atencionesDirectas',0) for d in recientes),
+        'atencionesIndirectas': sum(d.get('atencionesIndirectas',0) for d in recientes),
+        'metaGestionUltimoPeriodo': sum(d.get('metaGestion',0) for d in recientes),
+        'atencionesAcumuladas': acumuladas,
+        'metaGestionAcumulada': metas,
+        # Campos de compatibilidad: mismo total acumulado, NO proyección a 12 meses.
+        'atencionesAnualesProyectadas': acumuladas,
+        'metaGestionNacional': metas,
+        'fojaPromedioNacional': foja,
+        'excepciones': sum(d.get('excepciones',0) for d in recientes),
+        'datosSimulados': get_meta().get('simulado',True),
     }
 
 
