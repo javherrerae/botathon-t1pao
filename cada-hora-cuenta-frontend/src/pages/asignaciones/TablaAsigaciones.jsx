@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import Pagination from '../../components/ui/Pagination'
+
+const PAGE_SIZE = 20
 import Table from '../../components/ui/Table'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
@@ -51,6 +54,10 @@ function TablaAsignaciones({ asignaciones, tipos, onCambioEstado }) {
     }
   }
 
+    const [page, setPage] = useState(1);
+  const totalItems = filtradas.length;
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+  const paginated = filtradas.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
   const columnas = [
     { key: 'id', label: 'ID' },
     { key: 'personaId', label: 'Profesional' },
@@ -105,8 +112,15 @@ function TablaAsignaciones({ asignaciones, tipos, onCambioEstado }) {
 
       <Table
         columns={columnas}
-        data={filtradas}
+        data={paginated}
         emptyMessage="No hay asignaciones con ese estado."
+      />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={PAGE_SIZE}
+        onChange={setPage}
       />
 
       <Modal open={Boolean(seleccionada)} title={`Asignación ${seleccionada?.id ?? ''}`} onClose={cerrarModal}>

@@ -23,7 +23,7 @@ export function validarCargo(c) {
   const errores = {}
   if (!c.cargo?.trim()) errores.cargo = 'El cargo no puede estar vacío.'
   if (!(c.stdDirMin > 0)) errores.stdDirMin = 'Debe ser mayor a 0.'
-  if (c.stdIndMin !== null && !(c.stdIndMin > 0)) errores.stdIndMin = 'Debe ser mayor a 0.'
+  if (!(c.stdIndMin > 0)) errores.stdIndMin = 'Debe ser mayor a 0.'
 
   TRAMOS.forEach((t) => {
     if (!esFraccion(c[t.dir])) errores[t.dir] = 'Entre 0 % y 100 %.'
@@ -55,8 +55,12 @@ export function validarParametros(parametros, { justificacion } = {}) {
     })
   })
 
+  if (parametros.semanas.length !== 12) errores.semanas = 'Debe haber exactamente 12 meses.'
+  const periodos = parametros.semanas.map((s) => String(s.periodo))
+  const esperados = Array.from({ length: 12 }, (_, i) => `2026${String(i + 1).padStart(2, '0')}`)
+  if (new Set(periodos).size !== 12 || esperados.some((p) => !periodos.includes(p))) errores.semanas = 'Los periodos deben ser los 12 meses de 2026 (AAAAMM).'
   parametros.semanas.forEach((s, i) => {
-    if (!(s.semanasHabiles > 0 && s.semanasHabiles <= 5)) errores[`semana-${i}`] = 'Debe estar entre 0 y 5.'
+    if (!(s.semanasHabiles > 0)) errores[`semana-${i}`] = 'Debe ser mayor a 0.'
   })
 
   if (justificacion !== undefined && !justificacion.trim()) {
