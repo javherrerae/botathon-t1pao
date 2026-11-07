@@ -1,16 +1,29 @@
-# React + Vite
+# Cada Hora Cuenta – Frontend Botathon 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Ejecutar localmente
+1. Instalar Node.js compatible con Vite 8.
+2. Abrir esta carpeta en VS Code.
+3. Ejecutar `npm install`.
+4. Ejecutar `npm run dev`.
+5. Para validar producción: `npm run build`.
 
-Currently, two official plugins are available:
+## Primera fase incluida
+- React + Vite + Tailwind CSS 4.
+- AppShell con navegación lateral y encabezado.
+- Dashboard nacional con cuatro KPI y gráfico de 17 institutos (datos demostrativos).
+- Página inicial de planificación con búsqueda y filtros por instituto/cargo.
+- Datos compartidos en `src/data/mockData.json`.
+- Componentes UI reutilizables: Button, Card, Badge, Table, Select y Modal.
+- Vistas placeholder para los módulos restantes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Importante sobre los datos
+Los registros y valores del JSON son simulados para construir y demostrar la interfaz. No representan información oficial de Teletón ni datos reales de profesionales. Los nombres de institutos del gráfico son etiquetas de demostración; reemplazar por el catálogo validado por el equipo cuando esté disponible.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Correcciones aplicadas respecto del ZIP recibido
+- Se corrigieron rutas e importaciones que apuntaban a carpetas con mayúsculas distintas a las existentes.
+- Se eliminó la importación de un servicio inexistente en `services/` y se conectó el Dashboard al JSON local.
+- Se corrigió el uso de funciones asíncronas que el Dashboard trataba como objetos sincrónicos.
+- Se alinearon los nombres de las métricas del Dashboard con la estructura del plan de trabajo.
+- Se completaron módulos que estaban vacíos y provocaban fallos de importación.
+- Se añadió la tabla reutilizable y se construyó una primera vista de planificación.
+- Se actualizó idioma, título y metadatos del documento HTML.

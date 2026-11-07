@@ -1,0 +1,146 @@
+{
+  "resumenNacional": {
+    "horasSemanalesTotales": 21586,
+    "atencionesAnualesTotales": 1042866,
+    "metaGestionNacional": 938578,
+    "fojaPromedioNacional": 68.5,
+    "institutosContabilizados": 17
+  },
+  "institutos": [
+    {
+      "nombre": "Instituto 01",
+      "atenciones": 72000
+    },
+    {
+      "nombre": "Instituto 02",
+      "atenciones": 68000
+    },
+    {
+      "nombre": "Instituto 03",
+      "atenciones": 65000
+    },
+    {
+      "nombre": "Instituto 04",
+      "atenciones": 62000
+    },
+    {
+      "nombre": "Instituto 05",
+      "atenciones": 61000
+    },
+    {
+      "nombre": "Instituto 06",
+      "atenciones": 60000
+    },
+    {
+      "nombre": "Instituto 07",
+      "atenciones": 59000
+    },
+    {
+      "nombre": "Instituto 08",
+      "atenciones": 58000
+    },
+    {
+      "nombre": "Instituto 09",
+      "atenciones": 57000
+    },
+    {
+      "nombre": "Instituto 10",
+      "atenciones": 56000
+    },
+    {
+      "nombre": "Instituto 11",
+      "atenciones": 55000
+    },
+    {
+      "nombre": "Instituto 12",
+      "atenciones": 54000
+    },
+    {
+      "nombre": "Instituto 13",
+      "atenciones": 53000
+    },
+    {
+      "nombre": "Instituto 14",
+      "atenciones": 52000
+    },
+    {
+      "nombre": "Instituto 15",
+      "atenciones": 51000
+    },
+    {
+      "nombre": "Instituto 16",
+      "atenciones": 50000
+    },
+    {
+      "nombre": "Instituto 17",
+      "atenciones": 49000
+    }
+  ],
+  "profesionales": [
+    {
+      "personaId": 137732,
+      "nombre": "Profesional Anonimizado 1",
+      "instituto": "Arica",
+      "cargo": "MEDICO FISIATRA",
+      "tramoJornada": ">= 40h",
+      "horasContrato": 40,
+      "horasNAS": 8,
+      "asignacionesEspeciales": [
+        {
+          "tipo": "LIDER DE EQUIPO",
+          "horas": 2,
+          "autorizado": true
+        }
+      ],
+      "horasDisponibles": 30,
+      "atencionesDirectasSemanales": 36,
+      "atencionesIndirectasSemanales": 11,
+      "atencionesAnualesProyectadas": 2139,
+      "metaGestion90": 1921,
+      "fojaPct": 61.0,
+      "ejecutadoSIC": 1850
+    },
+    {
+      "personaId": 137733,
+      "nombre": "Profesional Anonimizado 2",
+      "instituto": "Santiago",
+      "cargo": "KINESIOLOGO",
+      "tramoJornada": "42h",
+      "horasContrato": 42,
+      "horasNAS": 6,
+      "asignacionesEspeciales": [],
+      "horasDisponibles": 36,
+      "atencionesDirectasSemanales": 40,
+      "atencionesIndirectasSemanales": 8,
+      "atencionesAnualesProyectadas": 2400,
+      "metaGestion90": 2160,
+      "fojaPct": 90.2,
+      "ejecutadoSIC": 2180
+    },
+    {
+      "personaId": 137734,
+      "nombre": "Profesional Anonimizado 3",
+      "instituto": "Concepción",
+      "cargo": "TERAPEUTA OCUPACIONAL",
+      "tramoJornada": "22h",
+      "horasContrato": 22,
+      "horasNAS": 4,
+      "asignacionesEspeciales": [],
+      "horasDisponibles": 18,
+      "atencionesDirectasSemanales": 20,
+      "atencionesIndirectasSemanales": 5,
+      "atencionesAnualesProyectadas": 1200,
+      "metaGestion90": 1080,
+      "fojaPct": 82.5,
+      "ejecutadoSIC": 950
+    }
+  ],
+  "parametros": {
+    "porcentajeMeta": 90,
+    "duracionEstandard": {
+      "MEDICO FISIATRA": 40,
+      "KINESIOLOGO": 30,
+      "TERAPEUTA OCUPACIONAL": 45
+    }
+  }
+}
