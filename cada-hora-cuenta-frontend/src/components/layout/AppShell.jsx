@@ -1,22 +1,7 @@
 import { Outlet } from 'react-router-dom'
-
 import Sidebar from './Sidebar'
 import Header from './Header'
-
 function AppShell() {
-  return (
-    <div className="min-h-screen flex bg-slate-50">
-      <Sidebar />
-
-      <div className="flex-1 min-w-0">
-        <Header />
-
-        <main className="p-6">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  )
+  return <div className="flex min-h-screen bg-[#F8FAFC]"><Sidebar /><div className="min-w-0 flex-1"><Header /><main className="p-5 md:p-8"><Outlet /></main></div></div>
 }
-
 export default AppShell
