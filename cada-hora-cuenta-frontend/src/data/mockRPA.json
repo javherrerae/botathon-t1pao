@@ -1,0 +1,54 @@
+
+{
+  "simulado": true,
+  "ejecuciones": [
+    {
+      "id": 1,
+      "archivo": "BUK_demo_2026_07.xlsx",
+      "fuente": "BUK",
+      "fecha": "2026-07-31",
+      "estado": "Completado",
+      "registros": 443,
+      "validos": 443,
+      "errores": 0
+    },
+    {
+      "id": 2,
+      "archivo": "BUK_demo_2026_06.xlsx",
+      "fuente": "BUK",
+      "fecha": "2026-06-30",
+      "estado": "Con observaciones",
+      "registros": 445,
+      "validos": 443,
+      "errores": 2
+    },
+    {
+      "id": 3,
+      "archivo": "SIC_demo_2026_07.xlsx",
+      "fuente": "SIC",
+      "fecha": null,
+      "estado": "Pendiente",
+      "registros": 0,
+      "validos": 0,
+      "errores": 0
+    }
+  ],
+  "novedades": [
+    {
+      "id": 1,
+      "profesionalId": "PROF-101",
+      "tipo": "Cambio de jornada",
+      "valorAnterior": "44 horas",
+      "valorNuevo": "42 horas",
+      "fechaVigencia": "2026-05-01"
+    },
+    {
+      "id": 2,
+      "profesionalId": "PROF-205",
+      "tipo": "Cambio de cargo",
+      "valorAnterior": "Kinesiólogo",
+      "valorNuevo": "Terapeuta ocupacional",
+      "fechaVigencia": "2026-07-01"
+    }
+  ]
+}
