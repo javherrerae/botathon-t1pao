@@ -1,33 +1,118 @@
+import { useEffect, useState } from 'react'
 import { Clock, CalendarCheck, Target, Percent } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import Card from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
-import mockData from '../../data/mockData.json'
+import { obtenerResumenNacional, obtenerInstitutos } from '../../service/api'
+
 function Dashboard() {
-  const resumen = mockData.resumenNacional
+  const [resumen, setResumen] = useState(null)
+  const [institutos, setInstitutos] = useState([])
+  const [cargando, setCargando] = useState(true)
+
+  useEffect(() => {
+    Promise.all([obtenerResumenNacional(), obtenerInstitutos()])
+      .then(([res, inst]) => {
+        setResumen(res)
+        setInstitutos(inst)
+      })
+      .finally(() => setCargando(false))
+  }, [])
+
+  if (cargando || !resumen) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <p className="text-sm font-semibold text-[#003366]">TELETÓN · GESTIÓN NACIONAL</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-900">Dashboard nacional</h1>
+        </div>
+        <p className="text-slate-500">Cargando datos…</p>
+      </div>
+    )
+  }
+
   const kpis = [
-    { title: 'Horas semanales totales', value: resumen.horasSemanalesTotales.toLocaleString('es-CL'), description: 'Horas contractuales informadas', icon: Clock },
-    { title: 'Atenciones planificadas anuales', value: resumen.atencionesAnualesTotales.toLocaleString('es-CL'), description: 'Proyección nacional', icon: CalendarCheck },
-    { title: 'Meta de gestión asistencial', value: resumen.metaGestionNacional.toLocaleString('es-CL'), description: 'Meta nacional de referencia (90%)', icon: Target },
-    { title: '% FOJA promedio', value: `${resumen.fojaPromedioNacional.toLocaleString('es-CL')}%`, description: 'Indicador promedio simulado', icon: Percent }
+    {
+      title: 'Horas semanales totales',
+      value: resumen.horasSemanalesTotales.toLocaleString('es-CL'),
+      description: 'Horas contractuales del último periodo',
+      icon: Clock,
+    },
+    {
+      title: 'Atenciones proyectadas anuales',
+      value: resumen.atencionesAnualesProyectadas.toLocaleString('es-CL'),
+      description: 'Proyección nacional basada en Bot',
+      icon: CalendarCheck,
+    },
+    {
+      title: 'Meta gestión nacional',
+      value: resumen.metaGestionNacional.toLocaleString('es-CL'),
+      description: 'Meta de referencia (90%)',
+      icon: Target,
+    },
+    {
+      title: '% FOJA promedio',
+      value: `${resumen.fojaPromedioNacional}%`,
+      description: `${resumen.profesionales} profesionales · ${resumen.institutosContabilizados} institutos`,
+      icon: Percent,
+    },
   ]
+
+  // Para el gráfico usamos atenciones del periodo más reciente
+  const datosGrafico = institutos.map((i) => ({
+    nombre: i.nombre,
+    atenciones: i.atenciones,
+    metaGestion: Math.round(i.metaGestion),
+  }))
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div><p className="text-sm font-semibold text-[#003366]">TELETÓN · GESTIÓN NACIONAL</p><h1 className="mt-1 text-2xl font-bold text-slate-900">Dashboard nacional</h1><p className="mt-1 text-slate-500">Resumen general de la planificación asistencial.</p></div>
+        <div>
+          <p className="text-sm font-semibold text-[#003366]">TELETÓN · GESTIÓN NACIONAL</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-900">Dashboard nacional</h1>
+          <p className="mt-1 text-slate-500">
+            Periodo: {resumen.periodoUltimo?.slice(0, 7)} · datos Blue Prism simulados
+          </p>
+        </div>
         <Badge type="warning">Datos simulados</Badge>
       </div>
+
       <section aria-label="Indicadores nacionales" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {kpis.map((item, index) => <Card key={item.title} {...item} accent={index === 1 ? 'blue' : 'red'} />)}
+        {kpis.map((item, index) => (
+          <Card key={item.title} {...item} accent={index === 1 ? 'blue' : 'red'} />
+        ))}
       </section>
-      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="mb-5"><h2 className="text-lg font-semibold text-slate-900">Atenciones planificadas por instituto</h2><p className="mt-1 text-sm text-slate-500">Vista preliminar de los 17 institutos contabilizados.</p></div>
-        <div className="h-80 w-full" role="img" aria-label="Gráfico de barras con atenciones planificadas por instituto">
-          <ResponsiveContainer width="100%" height="100%"><BarChart data={mockData.institutos} margin={{ top: 8, right: 12, left: 8, bottom: 8 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="nombre" tick={{ fontSize: 11 }} interval={0} angle={-25} textAnchor="end" height={65} /><YAxis tickFormatter={(value) => value.toLocaleString('es-CL')} /><Tooltip formatter={(value) => [Number(value).toLocaleString('es-CL'), 'Atenciones']} /><Bar dataKey="atenciones" name="Atenciones" fill="#AB0C02" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer>
+
+      {resumen.excepciones > 0 && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm font-semibold text-amber-800">
+            ⚠ {resumen.excepciones} excepciones detectadas en el último periodo — revisa el módulo de Excepciones.
+          </p>
         </div>
-        <p className="mt-3 text-xs text-slate-500">Cifras de ejemplo para validar la interfaz; no representan resultados oficiales por sede.</p>
+      )}
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold text-slate-900">Atenciones por instituto</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Total acumulado en los {institutos.length} institutos procesados.
+          </p>
+        </div>
+        <div className="h-80 w-full" role="img" aria-label="Gráfico de barras con atenciones por instituto">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={datosGrafico} margin={{ top: 8, right: 12, left: 8, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="nombre" tick={{ fontSize: 11 }} interval={0} angle={-25} textAnchor="end" height={65} />
+              <YAxis tickFormatter={(v) => v.toLocaleString('es-CL')} />
+              <Tooltip formatter={(v) => [Number(v).toLocaleString('es-CL'), 'Atenciones']} />
+              <Bar dataKey="atenciones" name="Atenciones" fill="#AB0C02" radius={[5, 5, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </section>
     </div>
   )
 }
+
 export default Dashboard
