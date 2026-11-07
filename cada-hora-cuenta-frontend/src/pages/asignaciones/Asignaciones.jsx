@@ -1,65 +1,66 @@
 import { useEffect, useState } from 'react'
+import Badge from '../../components/ui/Badge'
+import FormularioAsignacion from './FormularioAsignacion'
 import {
+  esDatoSimulado,
   obtenerAsignaciones,
   obtenerProfesionales,
   obtenerTiposAsignacion,
   obtenerReglasAsignacion,
 } from '../../service/asignacionesService'
-import { validarAsignacion } from '../../utils/validacionesAsignaciones'
-
-const CASOS = [
-  {
-    nombre: '137732 (40 h) ya tiene 2 asignaciones → intenta una tercera',
-    datos: { personaId: 137732, tipoId: 'COMITE_PARITARIO', horasSemanales: 0.5, vigenciaDesde: '2026-06-01', vigenciaHasta: '2026-12-31', justificacion: 'Prueba' },
-  },
-  {
-    nombre: '137734 (22 h) → no aplica el límite',
-    datos: { personaId: 137734, tipoId: 'TUTOR_DOCENTE', horasSemanales: 1, vigenciaDesde: '2026-06-01', vigenciaHasta: '2026-12-31', justificacion: 'Prueba' },
-  },
-  {
-    nombre: 'Formulario vacío',
-    datos: {},
-  },
-]
 
 function Asignaciones() {
-  const [resultados, setResultados] = useState([])
+  const [datos, setDatos] = useState(null) // { profesionales, tipos, asignaciones, reglas }
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    async function probar() {
-      const [profesionales, tipos, asignaciones, reglas] = await Promise.all([
-        obtenerProfesionales(),
-        obtenerTiposAsignacion(),
-        obtenerAsignaciones(),
-        obtenerReglasAsignacion(),
-      ])
-
-      const salida = CASOS.map((caso) => ({
-        nombre: caso.nombre,
-        ...validarAsignacion({
-          datos: caso.datos,
-          profesional: profesionales.find((p) => p.personaId === caso.datos.personaId),
-          tipo: tipos.find((t) => t.id === caso.datos.tipoId),
-          asignacionesExistentes: asignaciones.filter((a) => a.personaId === caso.datos.personaId),
-          reglas,
-        }),
-      }))
-      setResultados(salida)
-    }
-    probar()
+    Promise.all([
+      obtenerProfesionales(),
+      obtenerTiposAsignacion(),
+      obtenerAsignaciones(),
+      obtenerReglasAsignacion(),
+    ])
+      .then(([profesionales, tipos, asignaciones, reglas]) =>
+        setDatos({ profesionales, tipos, asignaciones, reglas })
+      )
+      .catch(() => setError('No se pudieron cargar los datos de asignaciones.'))
   }, [])
 
+  // Después de registrar, vuelve a pedir solo las asignaciones
+  const recargarAsignaciones = async () => {
+    const asignaciones = await obtenerAsignaciones()
+    setDatos((prev) => ({ ...prev, asignaciones }))
+  }
+
+  if (error) {
+    return <p role="alert" className="rounded-lg bg-red-50 p-4 text-red-800">{error}</p>
+  }
+  if (!datos) {
+    return <p className="text-slate-500">Cargando asignaciones...</p>
+  }
+
   return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-bold text-slate-900">Prueba de validaciones</h1>
-      {resultados.map((r) => (
-        <div key={r.nombre} className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="font-semibold">{r.valido ? '✅' : '❌'} {r.nombre}</p>
-          <ul className="mt-2 list-disc pl-5 text-sm text-red-700">
-            {Object.values(r.errores).map((msg) => <li key={msg}>{msg}</li>)}
-          </ul>
+    <section className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-[#003366]">MÓDULO</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-900">Asignaciones especiales</h1>
+          <p className="mt-1 text-slate-500">Registro de actividades que descuentan horas de la jornada asistencial.</p>
         </div>
-      ))}
+        {esDatoSimulado() && <Badge type="warning">Datos simulados</Badge>}
+      </div>
+
+      <FormularioAsignacion
+        profesionales={datos.profesionales}
+        tipos={datos.tipos}
+        asignaciones={datos.asignaciones}
+        reglas={datos.reglas}
+        onRegistrada={recargarAsignaciones}
+      />
+
+      <p className="text-sm text-slate-500">
+        Asignaciones registradas: {datos.asignaciones.length} (la tabla viene en el Paso 6)
+      </p>
     </section>
   )
 }
