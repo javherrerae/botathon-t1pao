@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Badge from '../../components/ui/Badge'
 import FormularioAsignacion from './FormularioAsignacion'
+import TablaAsignaciones from './TablaAsigaciones'
 import {
   esDatoSimulado,
   obtenerAsignaciones,
@@ -58,9 +59,11 @@ function Asignaciones() {
         onRegistrada={recargarAsignaciones}
       />
 
-      <p className="text-sm text-slate-500">
-        Asignaciones registradas: {datos.asignaciones.length} (la tabla viene en el Paso 6)
-      </p>
+      <TablaAsignaciones
+        asignaciones={datos.asignaciones}
+        tipos={datos.tipos}
+        onCambioEstado={recargarAsignaciones}
+      />
     </section>
   )
 }
