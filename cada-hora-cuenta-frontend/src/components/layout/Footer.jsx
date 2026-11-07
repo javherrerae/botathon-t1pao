@@ -27,7 +27,7 @@ function Footer() {
 
           <p>
             <span className="font-semibold text-white">Equipo:</span>{' '}
-            CADA HORA CUENTA
+             T1 PAO
           </p>
         </div>
 
