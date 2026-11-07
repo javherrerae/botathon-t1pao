@@ -1,0 +1,267 @@
+﻿<process name="Teleton - Contratos" version="1.0" bpversion="7.5.1.18099" cpeversion="10.0.136.0" narrative="lee la base de contratos de teleton" byrefcollection="true" processrunningmessage="" disableversioning="false" type="object" runmode="Exclusive" preferredid="47f76020-658a-4285-a690-9a2c52ccb6ed">
+  <appdef>
+    <element name="Application Root">
+      <id>b8ffe313-6c56-41d0-904d-f7467652d8d6</id>
+      <type>Application</type>
+      <basetype>Application</basetype>
+      <datatype>unknown</datatype>
+      <diagnose>False</diagnose>
+    </element>
+  </appdef>
+  <view>
+    <camerax>0</camerax>
+    <cameray>0</cameray>
+    <zoom version="2">1.25</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <subsheet subsheetid="1e5426aa-5b1c-4e21-aff6-0ce73b030bfa" type="CleanUp" published="True">
+    <name>Clean Up</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>0</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <subsheet subsheetid="7ea92fa0-ee59-4507-acb8-c881e946f10f" type="Normal" published="True">
+    <name>Leer Contratos</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>21</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <subsheet subsheetid="60044a0c-2240-441d-98bd-cfd3ccd51a0c" type="Normal" published="False">
+    <name>Action 1</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>0</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <stage stageid="8456e25f-a152-4218-b110-c5cc30bc801c" name="Start" type="Start">
+    <loginhibit />
+    <display x="15" y="-105" />
+    <onsuccess>a91110c0-2429-4e80-906f-4c25db8fcdb1</onsuccess>
+  </stage>
+  <stage stageid="a91110c0-2429-4e80-906f-4c25db8fcdb1" name="End" type="End">
+    <loginhibit />
+    <display x="15" y="90" />
+  </stage>
+  <stage stageid="c9787345-0282-4d2e-9492-c77353b370c4" name="Stage1" type="ProcessInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+    <references>
+      <reference>System.dll</reference>
+      <reference>System.Data.dll</reference>
+      <reference>System.Xml.dll</reference>
+      <reference>System.Drawing.dll</reference>
+    </references>
+    <imports>
+      <import>System</import>
+      <import>System.Drawing</import>
+      <import>System.Data</import>
+    </imports>
+    <language>visualbasic</language>
+    <pythondllpath>
+    </pythondllpath>
+    <pythonenvpath>
+    </pythonenvpath>
+    <globalcode><![CDATA[]]></globalcode>
+    <code><![CDATA[]]></code>
+  </stage>
+  <stage stageid="dee47779-87d6-4390-9ad4-4f05545c0127" name="Clean Up" type="SubSheetInfo">
+    <subsheetid>1e5426aa-5b1c-4e21-aff6-0ce73b030bfa</subsheetid>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="ad0242de-ff76-47bf-bdf3-722877058221" name="Start" type="Start">
+    <subsheetid>1e5426aa-5b1c-4e21-aff6-0ce73b030bfa</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+    <onsuccess>dd0b4fd4-52d4-4449-bd4a-5f658a5aeb98</onsuccess>
+  </stage>
+  <stage stageid="dd0b4fd4-52d4-4449-bd4a-5f658a5aeb98" name="End" type="End">
+    <subsheetid>1e5426aa-5b1c-4e21-aff6-0ce73b030bfa</subsheetid>
+    <loginhibit />
+    <display x="15" y="90" />
+  </stage>
+  <stage stageid="ebf42c6c-07f6-49b8-90a7-a5db093139b6" name="Action 1" type="SubSheetInfo">
+    <subsheetid>60044a0c-2240-441d-98bd-cfd3ccd51a0c</subsheetid>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="00cc1790-46d4-4148-8c1c-f4e9d26e0058" name="Start" type="Start">
+    <subsheetid>60044a0c-2240-441d-98bd-cfd3ccd51a0c</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+  </stage>
+  <stage stageid="47274551-1c14-4645-a6ef-188577ee03ce" name="End" type="End">
+    <subsheetid>60044a0c-2240-441d-98bd-cfd3ccd51a0c</subsheetid>
+    <loginhibit />
+    <display x="15" y="90" />
+  </stage>
+  <stage stageid="788ec3eb-d1e3-47ba-9a41-7fae78105609" name="Clean Up" type="Note">
+    <subsheetid>1e5426aa-5b1c-4e21-aff6-0ce73b030bfa</subsheetid>
+    <narrative>Clean Up Page
+
+This is an optional page where you might choose to perform some finalisation (or "cleanup") tasks as your business object is closed down.
+
+The cleanup action will be called automatically immediately after closing your business object at the end of a business process.
+
+You will not be able to call this action from a business process, nor will it be called at any other time than before the disposal of the business object.</narrative>
+    <display x="-180" y="60" w="180" h="230" />
+  </stage>
+  <stage stageid="f936e709-e868-4d93-9af4-5be419087b8b" name="Initialise" type="Note">
+    <narrative>Initialise Page
+
+This is an optional page where you might choose to perform some initialisation tasks after your business object is loaded.
+
+The initialise action will be called automatically immediately after loading your business object.
+
+You will not be able to call this action from a business process, nor will it be called at any other time than after the creation of the object.</narrative>
+    <display x="-180" y="60" w="180" h="230" />
+  </stage>
+  <stage stageid="6b5c71a3-99e6-4353-b832-a43b2b352a2b" name="Leer Contratos" type="SubSheetInfo">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <narrative>pagina para leer contratos teleton</narrative>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="b8520677-6beb-4404-88d3-b2959a95f002" name="Start" type="Start">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+    <inputs>
+      <input type="text" name="Ruta Archivo" narrative="ruta directa al archivo" stage="Ruta Archivo" />
+      <input type="text" name="Hoja" stage="Hoja" />
+      <input type="text" name="Celda Inicio" stage="Celda Inicio" />
+      <input type="text" name="Celda Fin" stage="Celda Fin" />
+    </inputs>
+    <onsuccess>460f4cc2-df69-4ed1-829c-bd6b469011a1</onsuccess>
+  </stage>
+  <stage stageid="a89f187a-f6c6-4246-8c94-6a1922be1b32" name="End" type="End">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit />
+    <display x="0" y="180" />
+    <outputs>
+      <output type="collection" name="Datos_Output" narrative="datos leidos del excel" stage="Datos" />
+    </outputs>
+  </stage>
+  <stage stageid="1b5bbf32-70b2-4731-a589-f2b59ed3f0a1" name="Ruta Archivo" type="Data">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <display x="90" y="-105" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">C:\Users\bot32\Desktop\Botathon\Nac - Base contratos x mes.xlsx</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="8f9096e3-6ae5-400d-bf5f-92b8179a340c" name="Hoja" type="Data">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <display x="15" y="-150" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">Dotacion_2026</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="fdbf4915-33c1-4099-9de3-a0204960960f" name="Handle" type="Data">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit />
+    <display x="165" y="30" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="89f58466-f0a2-4de6-98e9-a58d4345424a" name="Workbook" type="Data">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit />
+    <display x="165" y="75" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="8fc6dc37-1c77-41ce-98c2-b5af4b72805d" name="Datos" type="Collection">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit />
+    <display x="165" y="120" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="460f4cc2-df69-4ed1-829c-bd6b469011a1" name="Crear Excel" type="Action">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="0" y="0" />
+    <inputs>
+      <input type="flag" name="Enable Events" friendlyname="Enable Events" narrative="Flag to indicate that events should be enabled / disabled on the attached instance - defaulted to True" expr="" />
+    </inputs>
+    <outputs>
+      <output type="number" name="handle" friendlyname="handle" narrative="An integer which can be used to identify the created instance in subsequent actions" stage="Handle" />
+    </outputs>
+    <onsuccess>6b49052e-c13f-41a4-83d8-4813c5ed486d</onsuccess>
+    <resource object="MS Excel VBO" action="Create Instance" />
+  </stage>
+  <stage stageid="6b49052e-c13f-41a4-83d8-4813c5ed486d" name="Abrir Contratos" type="Action">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="0" y="45" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the required workbook should be opened. The default of zero indicates the currently active instance." expr="[Handle]" />
+      <input type="text" name="File name" friendlyname="File name" narrative="The path and name of the file which should be opened." expr="[Ruta Archivo]" />
+      <input type="number" name="Timeout" friendlyname="Timeout" narrative="The time available for the action to complete." expr="" />
+      <input type="text" name="Password" friendlyname="Password" narrative="Optional. The password required to open the workbook. This only applies to workbooks that were saved with a password." expr="" />
+      <input type="flag" name="Update Links" friendlyname="Update Links" narrative="Optional. Flag that controls whether external references (links) in the file, such as the reference to other Workbooks, are updated. Default value is True." expr="" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name used by Excel to identify the workbook - usually this is the file name (without the path)." stage="Workbook" />
+    </outputs>
+    <onsuccess>d686cd13-69c2-4005-857c-833457c5bfbb</onsuccess>
+    <resource object="MS Excel VBO" action="Open Workbook" />
+  </stage>
+  <stage stageid="d686cd13-69c2-4005-857c-833457c5bfbb" name="Leer Hoja" type="Action">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="0" y="90" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the number of rows is required. The default of zero indicates the currently active instance." expr="[Handle]" />
+      <input type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name of the workbook on which the number of rows is required. The default empty text value indicates the currently active workbook on the specified instance." expr="[Workbook]" />
+      <input type="text" name="Worksheet Name" friendlyname="Worksheet Name" narrative="The name of the worksheet within the specified workbook which should be written to a collection. The default empty text indicates the currently active worksheet within the specified workbook." expr="[Hoja]" />
+      <input type="flag" name="Use Clipboard" friendlyname="Use Clipboard" narrative="Optional. Flag value that controls whether the range should be copied to the clipboard and parsed into the output Collection. In some cases, this can result in faster processing. Default value is False." expr="" />
+      <input type="text" name="StartCell" friendlyname="StartCell" narrative="The starting cell of the range of interest" expr="[Celda Inicio]" />
+      <input type="text" name="EndCell" friendlyname="EndCell" narrative="The end cell of the range of interest" expr="[Celda Fin]" />
+      <input type="flag" name="Use Header" friendlyname="Use Header" narrative="Optional. This flag states if the Excel collection uses a header, or not. Default value is True." expr="" />
+      <input type="text" name="fetchDataWithMethod" friendlyname="fetchDataWithMethod" narrative="Optional. Text value that specifies the Excel property that should be checked for the contents of a cell. The possible options are 'Text', 'Value', or 'Value2'. The different options reference different representations of the contens of a cell depending on the value (ex. formatting of dates/currency). For further details, see Microsoft's documentation concerning the Range object. Default value is 'Value'." expr="" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Data" friendlyname="Data" narrative="The spreadsheet data from the specified range, as a collection" stage="Datos" />
+    </outputs>
+    <onsuccess>c58863fd-021f-4bfc-9760-c95d8bfa3361</onsuccess>
+    <resource object="MS Excel VBO" action="Get Worksheet Range As Collection" />
+  </stage>
+  <stage stageid="c58863fd-021f-4bfc-9760-c95d8bfa3361" name="Cerrar Excel" type="Action">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="0" y="135" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance to be closed. Zero indicates the currently active instance." expr="[Handle]" />
+      <input type="flag" name="Save Changes" friendlyname="Save Changes" narrative="True to save the changes to the open workbooks on the instance, False to discard any changes. Default is False." expr="" />
+      <input type="number" name="Timeout" friendlyname="Timeout" narrative="The time for the action to complete. Default is 30. Minimum is 10." expr="" />
+    </inputs>
+    <onsuccess>a89f187a-f6c6-4246-8c94-6a1922be1b32</onsuccess>
+    <resource object="MS Excel VBO" action="Close Instance" />
+  </stage>
+  <stage stageid="18e2bd60-8a6c-4d40-82ad-099bdd9c4518" name="Celda Inicio" type="Data">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <display x="-60" y="-135" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">A2</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="88e82f09-601d-4a03-9215-ad8a52482e36" name="Celda Fin" type="Data">
+    <subsheetid>7ea92fa0-ee59-4507-acb8-c881e946f10f</subsheetid>
+    <display x="-60" y="-90" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">S10000</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+</process>

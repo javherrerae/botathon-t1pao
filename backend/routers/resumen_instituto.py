@@ -46,13 +46,22 @@ def resumen_nacional():
     excepciones = sum(d.get("excepciones", 0) for d in datos_ultimo)
     institutos_count = len({d["instituto"] for d in datos_ultimo})
 
-    # Proyección anual simple: multiplicamos por 12 (el bot procesa mes a mes)
+    # Proyección anual = promedio mensual de los periodos procesados × 12.
+    # (Antes se tomaba solo el último mes × 12/n, lo que subestimaba el año.)
     periodos_count = len(periodos) if periodos else 1
-    atenciones_anuales = round(atenciones_total * (12 / periodos_count))
-    meta_anual = round(meta_gestion * (12 / periodos_count))
+    atenciones_anuales = round(sum(d.get("atencionesTotal", 0) for d in datos) / periodos_count * 12)
+    meta_anual = round(sum(d.get("metaGestion", 0) for d in datos) / periodos_count * 12, 1)
+
+    # FOJA = horas mensuales de atención directa / horas contratadas (definición del Excel).
+    # Se calcula con los resultados del bot (registros COMPLETADO del último periodo).
+    from data_loader import get_resultados
+    ok = [r for r in get_resultados() if r["periodo"] == ultimo_periodo and r["estado"] == "COMPLETADO"]
+    horas_ok = sum(r["horasContrato"] for r in ok)
+    foja = round(sum(r["horasContrato"] * r["pctDirecto"] for r in ok) / horas_ok * 100, 1) if horas_ok else 0
 
     return {
         "periodoUltimo": ultimo_periodo,
+        "periodosProcesados": periodos_count,
         "institutosContabilizados": institutos_count,
         "profesionales": profesionales,
         "horasSemanalesTotales": horas_totales,
@@ -62,9 +71,7 @@ def resumen_nacional():
         "metaGestionUltimoPeriodo": meta_gestion,
         "atencionesAnualesProyectadas": atenciones_anuales,
         "metaGestionNacional": meta_anual,
-        "fojaPromedioNacional": round(
-            atenciones_total / meta_gestion * 100 if meta_gestion else 0, 1
-        ),
+        "fojaPromedioNacional": foja,
         "excepciones": excepciones,
     }
 

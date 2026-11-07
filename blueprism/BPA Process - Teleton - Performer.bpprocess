@@ -1,0 +1,740 @@
+﻿<process name="Teleton - Performer" version="1.0" bpversion="7.5.1.18099" cpeversion="10.0.136.0" narrative="performer principal" byrefcollection="true" processrunningmessage="" disableversioning="false" preferredid="9017cae2-e472-41fe-8290-45dd05009db9" published="true" published_type="2">
+  <view>
+    <camerax>276</camerax>
+    <cameray>-42</cameray>
+    <zoom version="2">1.5625</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <subsheet subsheetid="4a7d0bb6-100d-40b0-9a3e-0d358a894566" type="Normal" published="False">
+    <name>Procesar Item</name>
+    <view>
+      <camerax>133</camerax>
+      <cameray>537</cameray>
+      <zoom version="2">1.875</zoom>
+    </view>
+  </subsheet>
+  <stage stageid="0c843050-dd5e-42c3-b81d-91c0847d481e" name="Start" type="Start">
+    <display x="0" y="-180" />
+    <onsuccess>fbad758e-d1e0-4080-8d20-b42751d83da7</onsuccess>
+  </stage>
+  <stage stageid="b2d7821e-01bc-4538-9f6f-3bd97bdf4f2a" name="End" type="End">
+    <display x="150" y="150" />
+  </stage>
+  <stage stageid="3efd707c-c76e-4c11-8a33-e34c5b2bdc55" name="Stage1" type="ProcessInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="aeb36977-d381-461b-ad24-a1167f640088" name="Nombre Cola" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="240" y="-105" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">Teleton_Planificacion</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="27bf11e0-7934-411f-a0d5-e89735af0a68" name="Item ID" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="240" y="-60" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="d58ecf14-eb3b-4737-a199-d2f985ee80fe" name="Datos Item" type="Collection">
+    <display x="240" y="-15" />
+    <datatype>collection</datatype>
+    <alwaysinit />
+  </stage>
+  <stage stageid="6ace2e17-9095-44c7-950b-601f9ededd06" name="Motivo" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="240" y="30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="090966e4-2c45-4c85-92c8-2ffa21e4a406" name="Completados" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>contador para completados</narrative>
+    <display x="240" y="75" />
+    <datatype>number</datatype>
+    <initialvalue>0</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="586f51f7-ccb2-4138-8ee6-1f4072869787" name="Excepciones" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>cont de excepciones</narrative>
+    <display x="240" y="120" />
+    <datatype>number</datatype>
+    <initialvalue>0</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="f6a75b16-e5b7-4207-bbd0-64df72cf53d7" name="Tomar Item" type="Action">
+    <narrative>This action gets the next item to be worked from the queue, returning its details and locking it so no other case can work it.
+
+Items with higher priorities (lower numerical value) are processed first. Where the priority is the same, the next item is the one that has been in the queue the longest,  is not already locked, and is not already completed.
+
+The Item ID returned is used to make further calls to update the work status for that item. It may be empty, in which case there are no items available. This can mean either a) the queue is empty, or b) the queue is not running. This mechanism can be used to cleanly stop all processes working a particular queue at the end of the next case. Items that have a 'deferred' time set will not be returned unless that time has been reached.</narrative>
+    <display x="0" y="90" />
+    <inputs>
+      <input type="text" name="Queue Name" friendlyname="Queue Name" narrative="The name of the queue" expr="[Nombre Cola]" />
+      <input type="text" name="Key Filter" friendlyname="Key Filter" narrative="Optionally, a key value to filter by. Only items with this key value will be considered." expr="" />
+      <input type="text" name="Tag Filter" friendlyname="Tag Filter" narrative="Optionally, a tag mask to filter by. This can consist of any number of tag searches - each term can be separated by a semi-colon and they are all applied to the search (ie. they are AND'ed terms not OR'ed terms). For example, &quot;Account: Joint; -Balance: Overdrawn; Card: *Visa*&quot; will include any items which match all the terms, ie. every item must have an 'Account: Joint' tag applied, no item can have a 'Balance: Overdrawn' tag applied, every item must have a tag applied which starts with 'Card: ' and then contains the text 'Visa'." expr="" />
+      <input type="text" name="Sort Order" friendlyname="Sort Order" narrative="Sort order method (Priority, SLA, PriorityAndSLA)" lookupValue="Priority" lookupType="WorkQueueSortTypes" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Item ID" friendlyname="Item ID" narrative="The ID of the item retrieved - empty if there are none available." stage="Item ID" />
+      <output type="collection" name="Data" friendlyname="Data" narrative="The data associated with the item - a single collection row." stage="Datos Item" />
+      <output type="text" name="Status" friendlyname="Status" narrative="The status of the item." stage="" />
+      <output type="number" name="Attempts" friendlyname="Attempts" narrative="The number of attempts already made to work this item." stage="" />
+    </outputs>
+    <onsuccess>ed0864ca-39aa-4b9f-8aba-25caa051b971</onsuccess>
+    <resource object="Blueprism.Automate.clsWorkQueuesActions" action="Get Next Item" />
+  </stage>
+  <stage stageid="ed0864ca-39aa-4b9f-8aba-25caa051b971" name="¿Hay Item?" type="Decision">
+    <display x="0" y="150" />
+    <decision expression="[Item ID] &lt;&gt; &quot;&quot;" />
+    <ontrue>88e601b5-e340-484a-b7f1-619546bd1ba2</ontrue>
+    <onfalse>e9b9646d-9e88-4cb8-b8b3-dd32093963d8</onfalse>
+  </stage>
+  <stage stageid="a857c2d0-bacf-4289-a3b3-aec1e1093e18" name="Procesar Item" type="SubSheetInfo">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="539c7126-c44e-43f0-8ca0-9565ac3a282f" name="Start" type="Start">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="15" y="-105" />
+    <onsuccess>bd292d23-245a-4781-84a8-d48adc7fa4f8</onsuccess>
+  </stage>
+  <stage stageid="b8cfc343-79f4-4e1e-b3bd-44c3ff228ec9" name="End" type="End">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="255" y="600" />
+  </stage>
+  <stage stageid="88e601b5-e340-484a-b7f1-619546bd1ba2" name="Procesar Item" type="SubSheet">
+    <loginhibit onsuccess="true" />
+    <display x="0" y="210" />
+    <onsuccess>858dc514-ae84-47e8-a25f-487568756074</onsuccess>
+    <processid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</processid>
+  </stage>
+  <stage stageid="2d7d30e3-11e1-4cb4-8e60-6ff33e28f853" name="Marcar Completado" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>Marks the item as completed, by updating the Completed timestamp and setting Locked to null. The item must be 'owned' by the calling process - i.e. it must have been retrieved using Get Next Item.</narrative>
+    <display x="-150" y="210" />
+    <inputs>
+      <input type="text" name="Item ID" friendlyname="Item ID" narrative="The ID of the item to mark" expr="[Item ID]" />
+    </inputs>
+    <onsuccess>7de5a4b1-9e6e-4703-9b8b-6937034c31e1</onsuccess>
+    <resource object="Blueprism.Automate.clsWorkQueuesActions" action="Mark Completed" />
+  </stage>
+  <stage stageid="7de5a4b1-9e6e-4703-9b8b-6937034c31e1" name="Sumar Completados" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <display x="-150" y="105" />
+    <onsuccess>f6a75b16-e5b7-4207-bbd0-64df72cf53d7</onsuccess>
+    <calculation expression="[Completados] + 1" stage="Completados" />
+  </stage>
+  <stage stageid="18cf5cc6-ede0-479d-8d61-b019037f3d43" name="Block1" type="Block">
+    <loginhibit onsuccess="true" />
+    <display x="-195" y="180" w="240" h="135" />
+    <font family="Segoe UI" size="10" style="Regular" color="7FB2E5" />
+  </stage>
+  <stage stageid="cd53f0d4-e002-4a52-8db5-c19f21d51601" name="Recover1" type="Recover">
+    <loginhibit />
+    <display x="-60" y="285" />
+    <onsuccess>bd8d1b8f-b438-4378-a337-bf406da7b378</onsuccess>
+  </stage>
+  <stage stageid="bd8d1b8f-b438-4378-a337-bf406da7b378" name="Exception Detail" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <display x="-60" y="345" />
+    <onsuccess>6625f573-2787-4aac-b22b-d1eadbf1d638</onsuccess>
+    <calculation expression="ExceptionDetail()" stage="Motivo" />
+  </stage>
+  <stage stageid="6625f573-2787-4aac-b22b-d1eadbf1d638" name="Resume1" type="Resume">
+    <loginhibit />
+    <display x="-240" y="345" />
+    <onsuccess>a2992df7-8ef5-476a-8902-7f1b218369e3</onsuccess>
+  </stage>
+  <stage stageid="d22f888c-7c45-49d0-acfe-5d385ba92417" name="Marcar Excepción" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>Marks the item as an exception, optionally retrying it by cloning the item and returning the ID of the clone. The item must be 'owned' by the calling process - i.e. it must have been retrieved using Get Next Item.</narrative>
+    <display x="-240" y="135" />
+    <inputs>
+      <input type="text" name="Item ID" friendlyname="Item ID" narrative="The ID of the item to mark" expr="[Item ID]" />
+      <input type="text" name="Exception Reason" friendlyname="Exception Reason" narrative="A description of the reason for the exception" expr="[Motivo]" />
+      <input type="flag" name="Retry" friendlyname="Retry" narrative="Whether or not to retry the item, up to the maximum number of attempts specified for the queue. Optional - if not specified, the item will be retried" expr="" />
+      <input type="flag" name="Keep Locked" friendlyname="Keep Locked" narrative="Whether or not the clone of the item should remain locked after the exception has been registered and the item is retried. Optional - default is False" expr="" />
+    </inputs>
+    <outputs>
+      <output type="text" name="New Item ID" friendlyname="New Item ID" narrative="The Item ID of the newly cloned item. This item will be locked if 'Keep Locked' is True. This will be empty if no item was cloned (ie. the item was not retried." stage="" />
+    </outputs>
+    <onsuccess>f8120c7b-f0da-498b-b54f-a4360b8a7fc5</onsuccess>
+    <resource object="Blueprism.Automate.clsWorkQueuesActions" action="Mark Exception" />
+  </stage>
+  <stage stageid="f8120c7b-f0da-498b-b54f-a4360b8a7fc5" name="Sumar Excepciones" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <display x="-240" y="75" />
+    <onsuccess>f6a75b16-e5b7-4207-bbd0-64df72cf53d7</onsuccess>
+    <calculation expression="[Excepciones] + 1" stage="Excepciones" />
+  </stage>
+  <stage stageid="ff01811d-7836-4e78-831b-6146b12c1eb5" name="Horas" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="240" y="-75" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="b4360efa-b17c-48f7-9a9c-8962643b3bac" name="¿Horas Válidas?" type="Decision">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="15" y="0" />
+    <decision expression="[Horas] &gt;= 1 AND [Horas] &lt;= 45" />
+    <ontrue>55c02441-c169-4e17-b89e-e81597e0f667</ontrue>
+    <onfalse>be4ff717-c333-4878-b820-87d60461b6d9</onfalse>
+  </stage>
+  <stage stageid="be4ff717-c333-4878-b820-87d60461b6d9" name="Exception1" type="Exception">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="120" y="0" />
+    <exception localized="yes" type="Business Exception" detail="&quot;Horas fuera de rango: &quot; &amp; [Horas]" />
+  </stage>
+  <stage stageid="70ff335d-53b6-44a2-a557-43c16ccdeeeb" name="Ruta Parametros" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>ruta para excel de parametros</narrative>
+    <display x="330" y="-105" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">\\tsclient\C\BotSalida\Parametros_Bot.xlsx</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="b2a6cc4a-1303-4366-94b2-50241be35029" name="Param Cargos" type="Collection">
+    <display x="330" y="-60" />
+    <datatype>collection</datatype>
+    <alwaysinit />
+  </stage>
+  <stage stageid="0f5fe475-bd1c-4ab4-a389-9d2788a98f7e" name="Param Semanas" type="Collection">
+    <display x="330" y="-15" />
+    <datatype>collection</datatype>
+    <alwaysinit />
+  </stage>
+  <stage stageid="16c460e3-bf4d-471d-853f-9ecb5fb60938" name="Leer Param Cargos" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="0" y="-60" />
+    <inputs>
+      <input type="text" name="Ruta Archivo" friendlyname="Ruta Archivo" narrative="ruta directa al archivo" expr="[Ruta Parametros]" />
+      <input type="text" name="Hoja" friendlyname="Hoja" expr="&quot;Cargos&quot;" />
+      <input type="text" name="Celda Inicio" friendlyname="Celda Inicio" expr="&quot;A1&quot;" />
+      <input type="text" name="Celda Fin" friendlyname="Celda Fin" expr="&quot;I100&quot;" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Datos_Output" friendlyname="Datos_Output" narrative="datos leidos del excel" stage="Param Cargos" />
+    </outputs>
+    <onsuccess>2f31f917-48b2-4140-9535-c2a2e7d51b1b</onsuccess>
+    <resource object="Teleton - Contratos" action="Leer Contratos" />
+  </stage>
+  <stage stageid="2f31f917-48b2-4140-9535-c2a2e7d51b1b" name="Leer Param Semanas" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="0" y="-15" />
+    <inputs>
+      <input type="text" name="Ruta Archivo" friendlyname="Ruta Archivo" narrative="ruta directa al archivo" expr="[Ruta Parametros]" />
+      <input type="text" name="Hoja" friendlyname="Hoja" expr="&quot;Semanas&quot;" />
+      <input type="text" name="Celda Inicio" friendlyname="Celda Inicio" expr="&quot;A1&quot;" />
+      <input type="text" name="Celda Fin" friendlyname="Celda Fin" expr="&quot;C13&quot;" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Datos_Output" friendlyname="Datos_Output" narrative="datos leidos del excel" stage="Param Semanas" />
+    </outputs>
+    <onsuccess>bebfc641-f630-4bfc-a709-6b4811412305</onsuccess>
+    <resource object="Teleton - Contratos" action="Leer Contratos" />
+  </stage>
+  <stage stageid="e2eaab75-c104-4c0b-b43e-a359f7e99f05" name="Cargo" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="240" y="-30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="94e7b9c7-7b82-4f0f-ad10-d8989042ce54" name="Periodo Texto" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="240" y="15" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="43b2ebc9-c6f4-47ea-a29f-408375e42b42" name="Encontrado" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="240" y="60" />
+    <datatype>flag</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="33de17b2-2b8b-4fec-9bc2-13e569176fa7" name="Std Dir" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="240" y="105" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="b2f2dc50-8f26-4edb-9efe-465e5b48dc97" name="Std Ind" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="240" y="150" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="eb889258-488d-4f2b-b8b4-ed50ab93a13e" name="P40 Dir" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="285" y="210" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="e1658cfe-cfc6-4408-a605-4ee566f9e330" name="P40 Ind" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="285" y="255" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="48871f00-72f2-4e8c-adda-5be7de6bf28d" name="P22 Dir" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="345" y="210" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="5630fb96-3561-4427-ae13-449607388da2" name="P22 Ind" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="345" y="255" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="9ecf61e3-7849-4f56-9dee-706070fa5a70" name="P0 Dir" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="405" y="210" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="96d930e0-9da7-4549-9033-b00eaeb2ef45" name="P0 Ind" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="405" y="255" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="e01c4d4c-58c4-4c3b-adc2-ea92ba6f7287" name="Pct Dir" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="315" y="-75" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="f2da5b69-9c48-4abf-8007-4dc8563e283e" name="Pct Ind" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="315" y="-30" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="9b2a07b4-4bed-4e4f-aecb-58ff43402eeb" name="Semanas" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="315" y="15" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="63edb8fa-d6be-462b-bf23-31ce19ca05a0" name="Ate Dir" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="315" y="60" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="e131e77b-7a56-495f-bdb9-ffd50904229c" name="Ate Ind" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="315" y="105" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="697fc9f4-b781-493f-98c5-2905ced18b0c" name="Ate Total" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="315" y="150" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="bd292d23-245a-4781-84a8-d48adc7fa4f8" name="Preparar Datos" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-60" />
+    <onsuccess>b4360efa-b17c-48f7-9a9c-8962643b3bac</onsuccess>
+    <steps>
+      <calculation expression="[Datos Item.Horas Semanales]" stage="Horas" />
+      <calculation expression="Upper(Trim([Datos Item.Cargo]))" stage="Cargo" />
+      <calculation expression="Right([Datos Item.Clave], 6)" stage="Periodo Texto" />
+      <calculation expression="False" stage="Encontrado" />
+      <calculation expression="0" stage="Semanas" />
+    </steps>
+  </stage>
+  <stage stageid="f9bc43a3-7569-4e2a-8d60-c0b616245f2d" name="Loop End1" type="LoopEnd">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="60" y="165" />
+    <onsuccess>4b8b3680-bda5-4b9e-a4a7-9e6449c29b7c</onsuccess>
+    <groupid>f74b1868-2e32-4020-8a33-7be9c9f01683</groupid>
+  </stage>
+  <stage stageid="55c02441-c169-4e17-b89e-e81597e0f667" name="Loop Start1" type="LoopStart">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="45" />
+    <onsuccess>b4a1cd17-f39f-4023-9a15-e83f7b385154</onsuccess>
+    <groupid>f74b1868-2e32-4020-8a33-7be9c9f01683</groupid>
+    <looptype>ForEach</looptype>
+    <loopdata>Param Cargos</loopdata>
+  </stage>
+  <stage stageid="b4a1cd17-f39f-4023-9a15-e83f7b385154" name="¿Es el cargo?" type="Decision">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="15" y="90" />
+    <decision expression="Upper(Trim([Param Cargos.Cargo])) = [Cargo]" />
+    <ontrue>4b2522a3-89d9-472e-839b-a27b4c474bbb</ontrue>
+    <onfalse>f9bc43a3-7569-4e2a-8d60-c0b616245f2d</onfalse>
+  </stage>
+  <stage stageid="4b2522a3-89d9-472e-839b-a27b4c474bbb" name="Guardar Param" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="-30" y="165" />
+    <onsuccess>f9bc43a3-7569-4e2a-8d60-c0b616245f2d</onsuccess>
+    <steps>
+      <calculation expression="True" stage="Encontrado" />
+      <calculation expression="[Param Cargos.Std_Dir_Min]" stage="Std Dir" />
+      <calculation expression="[Param Cargos.Std_Ind_Min]" stage="Std Ind" />
+      <calculation expression="[Param Cargos.Dir_40mas]" stage="P40 Dir" />
+      <calculation expression="[Param Cargos.Ind_40mas]" stage="P40 Ind" />
+      <calculation expression="[Param Cargos.Dir_22a40]" stage="P22 Dir" />
+      <calculation expression="[Param Cargos.Ind_22a40]" stage="P22 Ind" />
+      <calculation expression="[Param Cargos.Dir_menos22]" stage="P0 Dir" />
+      <calculation expression="[Param Cargos.Ind_menos22]" stage="P0 Ind" />
+    </steps>
+  </stage>
+  <stage stageid="4b8b3680-bda5-4b9e-a4a7-9e6449c29b7c" name="¿Cargo Encontrado?" type="Decision">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="15" y="225" />
+    <decision expression="[Encontrado] = True" />
+    <ontrue>b5a90cc8-408e-44c4-95fd-2b4c6736bd27</ontrue>
+    <onfalse>6728b5cc-1dd7-4101-ad57-eab75845b763</onfalse>
+  </stage>
+  <stage stageid="6728b5cc-1dd7-4101-ad57-eab75845b763" name="Exception2" type="Exception">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="135" y="225" />
+    <exception localized="yes" type="Business Exception" detail="&quot;Cargo sin parámetros: &quot; &amp; [Cargo]" />
+  </stage>
+  <stage stageid="1a639214-89d0-4c89-9f74-9fdd02f36caa" name="Otherwise1" type="ChoiceEnd">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="15" y="405" />
+    <onsuccess>ac157e2f-5e03-4228-bc00-3f1820cea8e1</onsuccess>
+    <groupid>2e724979-fc64-4891-86f9-029aa4a60d10</groupid>
+  </stage>
+  <stage stageid="b5a90cc8-408e-44c4-95fd-2b4c6736bd27" name="Choice1" type="ChoiceStart">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="15" y="285" />
+    <groupid>2e724979-fc64-4891-86f9-029aa4a60d10</groupid>
+    <choices>
+      <choice expression="[Horas] &gt;= 40">
+        <name>40 horas o más</name>
+        <distance>30</distance>
+        <ontrue>7eecde45-69ed-4e7c-8799-e316c3d66842</ontrue>
+      </choice>
+      <choice expression="[Horas] &gt;= 22">
+        <name>22 a 39 horas</name>
+        <distance>75</distance>
+        <ontrue>faec0c6d-8af4-483d-a372-c62ea532255c</ontrue>
+      </choice>
+    </choices>
+  </stage>
+  <stage stageid="5db10700-ac07-44eb-b830-f3272aa49ca8" name="Loop End2" type="LoopEnd">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="105" y="480" />
+    <onsuccess>956faa54-c9f6-49ff-8ce1-0c70d552b1d7</onsuccess>
+    <groupid>9723266d-b620-46b2-9e01-feb090eac64a</groupid>
+  </stage>
+  <stage stageid="f67fa984-3001-4dc5-8b81-f0581e93ae44" name="Loop Start2" type="LoopStart">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="180" y="360" />
+    <onsuccess>d8f41b6a-1507-405c-b3ca-03a46a147e52</onsuccess>
+    <groupid>9723266d-b620-46b2-9e01-feb090eac64a</groupid>
+    <looptype>ForEach</looptype>
+    <loopdata>Param Semanas</loopdata>
+  </stage>
+  <stage stageid="d8f41b6a-1507-405c-b3ca-03a46a147e52" name="¿Es el mes?" type="Decision">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="180" y="405" />
+    <decision expression="[Param Semanas.Periodo] &amp; &quot;&quot; = [Periodo Texto]" />
+    <ontrue>b4928ea6-fb19-472e-9b02-11ac02395cfa</ontrue>
+    <onfalse>5db10700-ac07-44eb-b830-f3272aa49ca8</onfalse>
+  </stage>
+  <stage stageid="b4928ea6-fb19-472e-9b02-11ac02395cfa" name="Semanas Habiles" type="Calculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="210" y="480" />
+    <onsuccess>5db10700-ac07-44eb-b830-f3272aa49ca8</onsuccess>
+    <calculation expression="[Param Semanas.Semanas_Habiles]" stage="Semanas" />
+  </stage>
+  <stage stageid="956faa54-c9f6-49ff-8ce1-0c70d552b1d7" name="¿Mes encontrado?" type="Decision">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="105" y="540" />
+    <decision expression="[Semanas] &gt; 0" />
+    <ontrue>5df8f04b-2121-4fd8-a1ad-6e2eb46e6675</ontrue>
+    <onfalse>59cc5c07-f5f8-4c3d-988f-4d8eff4b8c51</onfalse>
+  </stage>
+  <stage stageid="59cc5c07-f5f8-4c3d-988f-4d8eff4b8c51" name="Exception3" type="Exception">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <display x="180" y="540" />
+    <exception localized="yes" type="Business Exception" detail="&quot;Periodo sin semanas hábiles: &quot; &amp; [Periodo Texto]" />
+  </stage>
+  <stage stageid="5df8f04b-2121-4fd8-a1ad-6e2eb46e6675" name="Calcular Atenciones" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="105" y="600" />
+    <onsuccess>9e8ffa6a-9759-47c0-9539-0f5f3f4d2cb0</onsuccess>
+    <steps>
+      <calculation expression="Round([Horas] * [Pct Dir] * 60 / [Std Dir] * [Semanas], 0)" stage="Ate Dir" />
+      <calculation expression="Round([Horas] * [Pct Ind] * 60 / [Std Ind] * [Semanas], 0)" stage="Ate Ind" />
+      <calculation expression="[Ate Dir] + [Ate Ind]" stage="Ate Total" />
+    </steps>
+  </stage>
+  <stage stageid="7eecde45-69ed-4e7c-8799-e316c3d66842" name="40 hrs o mas" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="105" y="315" />
+    <onsuccess>f67fa984-3001-4dc5-8b81-f0581e93ae44</onsuccess>
+    <steps>
+      <calculation expression="[P40 Dir]" stage="Pct Dir" />
+      <calculation expression="[P40 Ind]" stage="Pct Ind" />
+      <calculation expression="&quot;&gt;= 40h&quot;" stage="Tramo" />
+    </steps>
+  </stage>
+  <stage stageid="faec0c6d-8af4-483d-a372-c62ea532255c" name="22 a 39 hrs" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="105" y="360" />
+    <onsuccess>f67fa984-3001-4dc5-8b81-f0581e93ae44</onsuccess>
+    <steps>
+      <calculation expression="[P22 Dir]" stage="Pct Dir" />
+      <calculation expression="[P22 Ind]" stage="Pct Ind" />
+      <calculation expression="&quot;22-39h&quot;" stage="Tramo" />
+    </steps>
+  </stage>
+  <stage stageid="ac157e2f-5e03-4228-bc00-3f1820cea8e1" name="Otherwise" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="105" y="405" />
+    <onsuccess>f67fa984-3001-4dc5-8b81-f0581e93ae44</onsuccess>
+    <steps>
+      <calculation expression="[P0 Dir]" stage="Pct Dir" />
+      <calculation expression="[P0 Ind]" stage="Pct Ind" />
+      <calculation expression="&quot;&lt; 22h&quot;" stage="Tramo" />
+    </steps>
+  </stage>
+  <stage stageid="c3aa0925-2ccd-49c9-9212-184a92198243" name="Carpeta Salida" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="330" y="30" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">\\tsclient\C\BotSalida\</initialvalue>
+    <alwaysinit />
+  </stage>
+  <stage stageid="993d8ed2-a83a-43a6-9e39-f656458c2840" name="Ruta Salida" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="330" y="75" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <alwaysinit />
+  </stage>
+  <stage stageid="3c976526-6ff8-48e5-8214-d4d141dfb089" name="Meta Pct" type="Data">
+    <loginhibit onsuccess="true" />
+    <display x="330" y="120" />
+    <datatype>number</datatype>
+    <initialvalue>0.9</initialvalue>
+    <alwaysinit />
+  </stage>
+  <stage stageid="c5b6a2b8-c288-446f-8a81-e6918039ce72" name="Resultado" type="Collection">
+    <display x="420" y="-15" />
+    <datatype>collection</datatype>
+    <alwaysinit />
+    <collectioninfo>
+      <field name="clave" type="text" />
+      <field name="personaId" type="number" />
+      <field name="it" type="number" />
+      <field name="instituto" type="text" />
+      <field name="cargo" type="text" />
+      <field name="periodo" type="text" />
+      <field name="horasContrato" type="number" />
+      <field name="tramoJornada" type="text" />
+      <field name="pctDirecto" type="number" />
+      <field name="pctIndirecto" type="number" />
+      <field name="semanasHabiles" type="number" />
+      <field name="atencionesDirectas" type="number" />
+      <field name="atencionesIndirectas" type="number" />
+      <field name="atencionesTotal" type="number" />
+      <field name="metaGestion" type="number" />
+      <field name="estado" type="text" />
+      <field name="motivo" type="text" />
+    </collectioninfo>
+    <initialvalue>
+      <row>
+        <field name="clave" type="text" value="" />
+        <field name="personaId" type="number" value="" />
+        <field name="it" type="number" value="" />
+        <field name="instituto" type="text" value="" />
+        <field name="cargo" type="text" value="" />
+        <field name="periodo" type="text" value="" />
+        <field name="horasContrato" type="number" value="" />
+        <field name="tramoJornada" type="text" value="" />
+        <field name="pctDirecto" type="number" value="" />
+        <field name="pctIndirecto" type="number" value="" />
+        <field name="semanasHabiles" type="number" value="" />
+        <field name="atencionesDirectas" type="number" value="" />
+        <field name="atencionesIndirectas" type="number" value="" />
+        <field name="atencionesTotal" type="number" value="" />
+        <field name="metaGestion" type="number" value="" />
+        <field name="estado" type="text" value="" />
+        <field name="motivo" type="text" value="" />
+      </row>
+    </initialvalue>
+  </stage>
+  <stage stageid="fbad758e-d1e0-4080-8d20-b42751d83da7" name="Armar ruta de salida" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <display x="0" y="-120" />
+    <onsuccess>16c460e3-bf4d-471d-853f-9ecb5fb60938</onsuccess>
+    <calculation expression="[Carpeta Salida] &amp; &quot;Resultados_&quot; &amp; FormatDateTime(Now(), &quot;yyyyMMdd_HHmm&quot;) &amp; &quot;.xlsx&quot;" stage="Ruta Salida" />
+  </stage>
+  <stage stageid="bebfc641-f630-4bfc-a709-6b4811412305" name="Iniciar Salida" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="0" y="30" />
+    <onsuccess>f6a75b16-e5b7-4207-bbd0-64df72cf53d7</onsuccess>
+    <resource object="Teleton - Resultados" action="Iniciar Salida" />
+  </stage>
+  <stage stageid="e9b9646d-9e88-4cb8-b8b3-dd32093963d8" name="Guardar Salida" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="75" y="150" />
+    <inputs>
+      <input type="text" name="Ruta Salida" friendlyname="Ruta Salida" expr="[Ruta Salida]" />
+    </inputs>
+    <onsuccess>b2d7821e-01bc-4538-9f6f-3bd97bdf4f2a</onsuccess>
+    <resource object="Teleton - Resultados" action="Guardar Salida" />
+  </stage>
+  <stage stageid="fd53dd0f-c9b1-417d-8fc6-a5652b10ba01" name="Tramo" type="Data">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="285" y="-120" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="9e8ffa6a-9759-47c0-9539-0f5f3f4d2cb0" name="Armar Resultado" type="MultipleCalculation">
+    <subsheetid>4a7d0bb6-100d-40b0-9a3e-0d358a894566</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="180" y="600" />
+    <onsuccess>b8cfc343-79f4-4e1e-b3bd-44c3ff228ec9</onsuccess>
+    <steps>
+      <calculation expression="[Datos Item.Clave]" stage="Resultado.clave" />
+      <calculation expression="[Datos Item.PersonaId]" stage="Resultado.personaId" />
+      <calculation expression="[Datos Item.IT]" stage="Resultado.it" />
+      <calculation expression="[Datos Item.Instituto]" stage="Resultado.instituto" />
+      <calculation expression="[Cargo]" stage="Resultado.cargo" />
+      <calculation expression="FormatDate([Datos Item.Periodo], &quot;yyyy-MM-dd&quot;)" stage="Resultado.periodo" />
+      <calculation expression="[Horas]" stage="Resultado.horasContrato" />
+      <calculation expression="[Tramo]" stage="Resultado.tramoJornada" />
+      <calculation expression="[Pct Dir]" stage="Resultado.pctDirecto" />
+      <calculation expression="[Pct Ind]" stage="Resultado.pctIndirecto" />
+      <calculation expression="[Semanas]" stage="Resultado.semanasHabiles" />
+      <calculation expression="[Ate Dir]" stage="Resultado.atencionesDirectas" />
+      <calculation expression="[Ate Ind]" stage="Resultado.atencionesIndirectas" />
+      <calculation expression="[Ate Total]" stage="Resultado.atencionesTotal" />
+      <calculation expression="Round([Ate Total] * [Meta Pct], 1)" stage="Resultado.metaGestion" />
+      <calculation expression="&quot;COMPLETADO&quot;" stage="Resultado.estado" />
+      <calculation expression="&quot;&quot;" stage="Resultado.motivo" />
+    </steps>
+  </stage>
+  <stage stageid="858dc514-ae84-47e8-a25f-487568756074" name="Escribir Fila" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-75" y="210" />
+    <inputs>
+      <input type="collection" name="Fila" friendlyname="Fila" expr="[Resultado]" />
+    </inputs>
+    <onsuccess>2d7d30e3-11e1-4cb4-8e60-6ff33e28f853</onsuccess>
+    <resource object="Teleton - Resultados" action="Escribir Fila" />
+  </stage>
+  <stage stageid="a2992df7-8ef5-476a-8902-7f1b218369e3" name="Armar Resultado Excepción" type="MultipleCalculation">
+    <loginhibit onsuccess="true" />
+    <display x="-240" y="270" />
+    <onsuccess>6ef540be-9672-4a29-a32a-46eb15a1cdd2</onsuccess>
+    <steps>
+      <calculation expression="[Datos Item.Clave]" stage="Resultado.clave" />
+      <calculation expression="[Datos Item.PersonaId]" stage="Resultado.personaId" />
+      <calculation expression="[Datos Item.IT]" stage="Resultado.it" />
+      <calculation expression="[Datos Item.Instituto]" stage="Resultado.instituto" />
+      <calculation expression="[Datos Item.Cargo]" stage="Resultado.cargo" />
+      <calculation expression="FormatDate([Datos Item.Periodo], &quot;yyyy-MM-dd&quot;)" stage="Resultado.periodo" />
+      <calculation expression="[Datos Item.Horas Semanales]" stage="Resultado.horasContrato" />
+      <calculation expression="&quot;&quot;" stage="Resultado.tramoJornada" />
+      <calculation expression="0" stage="Resultado.pctDirecto" />
+      <calculation expression="0" stage="Resultado.pctIndirecto" />
+      <calculation expression="0" stage="Resultado.semanasHabiles" />
+      <calculation expression="0" stage="Resultado.atencionesDirectas" />
+      <calculation expression="0" stage="Resultado.atencionesIndirectas" />
+      <calculation expression="0" stage="Resultado.atencionesTotal" />
+      <calculation expression="0" stage="Resultado.metaGestion" />
+      <calculation expression="&quot;EXCEPCION&quot;" stage="Resultado.estado" />
+      <calculation expression="[Motivo]" stage="Resultado.motivo" />
+    </steps>
+  </stage>
+  <stage stageid="6ef540be-9672-4a29-a32a-46eb15a1cdd2" name="Escribir Excepción" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="-240" y="195" />
+    <inputs>
+      <input type="collection" name="Fila" friendlyname="Fila" expr="[Resultado]" />
+    </inputs>
+    <onsuccess>d22f888c-7c45-49d0-acfe-5d385ba92417</onsuccess>
+    <resource object="Teleton - Resultados" action="Escribir Fila" />
+  </stage>
+</process>

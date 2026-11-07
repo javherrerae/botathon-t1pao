@@ -48,7 +48,7 @@ function Asignaciones() {
           <h1 className="mt-1 text-2xl font-bold text-slate-900">Asignaciones especiales</h1>
           <p className="mt-1 text-slate-500">Registro de actividades que descuentan horas de la jornada asistencial.</p>
         </div>
-        {esDatoSimulado() && <Badge type="warning">Datos simulados</Badge>}
+        {esDatoSimulado() && <Badge type="warning">Datos de Blue Prism</Badge>}
       </div>
 
       <FormularioAsignacion

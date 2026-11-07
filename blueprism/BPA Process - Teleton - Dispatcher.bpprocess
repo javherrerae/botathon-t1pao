@@ -1,0 +1,211 @@
+﻿<process name="Teleton - Dispatcher" version="1.0" bpversion="7.5.1.18099" cpeversion="10.0.136.0" narrative="dispatcher para filas de excel" byrefcollection="true" processrunningmessage="" disableversioning="false" preferredid="31ee5c7a-2991-4df1-b24c-babf0177a44c" published="true" published_type="2">
+  <view>
+    <camerax>5</camerax>
+    <cameray>-12</cameray>
+    <zoom version="2">1.875</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <stage stageid="bfdeae45-590a-4b7f-b053-51f411898b14" name="Start" type="Start">
+    <display x="15" y="-105" />
+    <onsuccess>3fff228c-2b87-442e-8308-8e9e8233437c</onsuccess>
+  </stage>
+  <stage stageid="a74bd3fb-c821-48be-aaac-bc554491c057" name="End" type="End">
+    <display x="-30" y="240" />
+  </stage>
+  <stage stageid="051b09e1-7532-44eb-a1a1-9940f0c9c44b" name="Stage1" type="ProcessInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="5eca82d7-2854-4b0a-bddf-88c6f1e73164" name="Ruta Contratos" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>donde está el excel</narrative>
+    <display x="300" y="-30" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">\\tsclient\C\BotSalida\Nac - Base contratos x mes.xlsx</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="945df63d-f41b-4eb8-ba70-ba88dab41170" name="Nombre Cola" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>a que cola cargar</narrative>
+    <display x="285" y="15" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">Teleton_Planificacion</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="5ab41cf9-aca6-48d1-8081-e203765e2a15" name="Handle" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>identificador del excel que entrega el VBO</narrative>
+    <display x="270" y="75" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="d1bd0066-a3f9-42f2-be6d-ad2221a4ba42" name="Workbook" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>nombre del libro abierto</narrative>
+    <display x="270" y="120" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="7a20736a-adfe-4512-8dd7-669e4e6839c8" name="Datos" type="Collection">
+    <narrative>toda la hoja leida</narrative>
+    <display x="420" y="-15" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="710e0b55-ae56-408d-a6ee-d03f24b26d5e" name="Item" type="Collection">
+    <narrative>el item que se carga a la cola
+</narrative>
+    <display x="405" y="30" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+    <collectioninfo>
+      <field name="Clave" type="text" description="clave persona - periodo" />
+      <field name="PersonaId" type="number" description="id de la persona" />
+      <field name="IT" type="number" />
+      <field name="Instituto" type="text" />
+      <field name="Cargo" type="text" />
+      <field name="Cod_Esp" type="text" description="codigo especialidad?" />
+      <field name="Periodo" type="date" description="fecha periodo" />
+      <field name="Horas Semanales" type="number" description="cant horas semanales" />
+      <field name="Tipo de Contrato" type="text" />
+      <field name="Fecha Termino" type="text" />
+    </collectioninfo>
+    <initialvalue>
+      <row>
+        <field name="Clave" type="text" value="" />
+        <field name="PersonaId" type="number" value="" />
+        <field name="IT" type="number" value="" />
+        <field name="Instituto" type="text" value="" />
+        <field name="Cargo" type="text" value="" />
+        <field name="Cod_Esp" type="text" value="" />
+        <field name="Periodo" type="date" value="" />
+        <field name="Horas Semanales" type="number" value="" />
+        <field name="Tipo de Contrato" type="text" value="" />
+        <field name="Fecha Termino" type="text" value="" />
+      </row>
+    </initialvalue>
+  </stage>
+  <stage stageid="2bb616c2-63e4-470a-9ee8-9c8151577656" name="Cargados" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>contador para el log</narrative>
+    <display x="390" y="75" />
+    <datatype>number</datatype>
+    <initialvalue>0</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="b5dd202a-5891-442e-93ff-2aedf45316a4" name="Descartados" type="Data">
+    <loginhibit onsuccess="true" />
+    <narrative>contador para el log</narrative>
+    <display x="390" y="120" />
+    <datatype>number</datatype>
+    <initialvalue>0</initialvalue>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="3fff228c-2b87-442e-8308-8e9e8233437c" name="Leer Contratos" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>llamada al objeto para leer contratos</narrative>
+    <display x="15" y="-60" />
+    <inputs>
+      <input type="text" name="Ruta Archivo" friendlyname="Ruta Archivo" narrative="ruta directa al archivo" expr="[Ruta Contratos]" />
+      <input type="text" name="Hoja" friendlyname="Hoja" expr="&quot;Dotacion_2026&quot;" />
+      <input type="text" name="Celda Inicio" friendlyname="Celda Inicio" expr="&quot;A2&quot;" />
+      <input type="text" name="Celda Fin" friendlyname="Celda Fin" expr="&quot;S10000&quot;" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Datos_Output" friendlyname="Datos_Output" narrative="datos leidos del excel" stage="Datos" />
+    </outputs>
+    <onsuccess>27ad5a49-4793-480f-9ab6-678cd961f0d3</onsuccess>
+    <resource object="Teleton - Contratos" action="Leer Contratos" />
+  </stage>
+  <stage stageid="a05db215-117d-49fa-b8a0-45bde7c4da2d" name="Loop End" type="LoopEnd">
+    <loginhibit onsuccess="true" />
+    <display x="-30" y="195" />
+    <onsuccess>a74bd3fb-c821-48be-aaac-bc554491c057</onsuccess>
+    <groupid>33e17a3c-7bfd-45f1-8315-7c92fbcc729f</groupid>
+  </stage>
+  <stage stageid="27ad5a49-4793-480f-9ab6-678cd961f0d3" name="Loop Start" type="LoopStart">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-15" />
+    <onsuccess>1d6e4cea-f8bc-4012-8c44-fce8c320db5c</onsuccess>
+    <groupid>33e17a3c-7bfd-45f1-8315-7c92fbcc729f</groupid>
+    <looptype>ForEach</looptype>
+    <loopdata>Datos</loopdata>
+  </stage>
+  <stage stageid="1d6e4cea-f8bc-4012-8c44-fce8c320db5c" name="¿Fila vacía?" type="Decision">
+    <display x="15" y="30" />
+    <decision expression="Trim([Datos.PersonaId] &amp; &quot;&quot;) = &quot;&quot;" />
+    <ontrue>399b25b5-c1a6-4bb9-a4d5-34b26a1233d4</ontrue>
+    <onfalse>f0bedded-eed4-4533-a900-fe622492d181</onfalse>
+  </stage>
+  <stage stageid="399b25b5-c1a6-4bb9-a4d5-34b26a1233d4" name="Contar descartado" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <narrative>cuenta los descartados de filas</narrative>
+    <display x="-90" y="60" />
+    <onsuccess>a05db215-117d-49fa-b8a0-45bde7c4da2d</onsuccess>
+    <calculation expression="[Descartados] + 1" stage="Descartados" />
+  </stage>
+  <stage stageid="f0bedded-eed4-4533-a900-fe622492d181" name="Armar Item" type="MultipleCalculation">
+    <loginhibit onsuccess="true" />
+    <narrative>arma el item con una fila valida</narrative>
+    <display x="105" y="60" />
+    <onsuccess>26fdac96-12e5-4dc3-9821-7614e38877a5</onsuccess>
+    <steps>
+      <calculation expression="[Datos.PersonaId] &amp; &quot;_&quot; &amp; FormatDate([Datos.Periodo], &quot;yyyyMM&quot;)" stage="Item.Clave" />
+      <calculation expression="[Datos.PersonaId]" stage="Item.PersonaId" />
+      <calculation expression="[Datos.IT]" stage="Item.IT" />
+      <calculation expression="[Datos.Instituto]" stage="Item.Instituto" />
+      <calculation expression="[Datos.Cargo]" stage="Item.Cargo" />
+      <calculation expression="[Datos.Cod_Esp]" stage="Item.Cod_Esp" />
+      <calculation expression="[Datos.Periodo]" stage="Item.Periodo" />
+      <calculation expression="[Datos.Horas Semanales]" stage="Item.Horas Semanales" />
+      <calculation expression="[Datos.Tipo de Contrato]" stage="Item.Tipo de Contrato" />
+      <calculation expression="[Datos.Fecha Término]" stage="Item.Fecha Termino" />
+    </steps>
+  </stage>
+  <stage stageid="26fdac96-12e5-4dc3-9821-7614e38877a5" name="Agregar a Cola" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>The Data collection contains the items to be added to the queue. The collection may contain single or multiple rows, with each representing an item to be added.
+
+If there is a failure during the process, the queue will be unchanged - i.e. no rows will be loaded even if the error occurred on the last one.
+
+If Defer Until is specified, the items will not be available to be worked until then. Otherwise, they are available immediately.
+
+If the queue has a key field defined, an item added has key data longer than the maximum permitted 255 characters, an error will occur</narrative>
+    <display x="105" y="120" />
+    <inputs>
+      <input type="text" name="Queue Name" friendlyname="Queue Name" narrative="The name of the queue to add items to" expr="[Nombre Cola]" />
+      <input type="collection" name="Data" friendlyname="Data" narrative="A collection containing the data, one row for each item to be added" expr="[Item]" />
+      <input type="datetime" name="Defer Until" friendlyname="Defer Until" narrative="Optionally, the date/time the new item(s) should be deferred until" expr="" />
+      <input type="number" name="Priority" friendlyname="Priority" narrative="Optionally, the priority for the new item(s). Lower numbers represent higher priorities. The default is 0." expr="" />
+      <input type="text" name="Tags" friendlyname="Tags" narrative="Optionally, a semi-colon-separated set of tags to apply to the queue item(s)" expr="" />
+      <input type="text" name="Status" friendlyname="Status" narrative="Optionally, the initial status required of the work queue item(s) " expr="" />
+      <input type="number" name="Batch Size" friendlyname="Batch Size" narrative="Optionally, the batch size to use when adding many items to the queue.  A Value of 0 will process all items in one batch.  An empty field will use the default batch size of 1000." expr="">
+        <validator type="BluePrism.AutomateProcessCore.RangeParameterValidation" parameter="0:25000" />
+      </input>
+      <input type="timespan" name="SLA" friendlyname="SLA" narrative="Optionally, the SLA that specifies the agreed-upon response or resolution time for the item(s), indicating the maximum acceptable duration for processing them based on their criticality or urgency.&#xD;&#xA;SLA values are provided as a timespan with a minimum value of 1 second and a maximum value of 999 days, 23 hours, 59 minutes, and 59 seconds.&#xD;&#xA;There is no default value for SLA if one is not provided." expr="" />
+      <input type="datetime" name="SLA Deadline" friendlyname="SLA Deadline" narrative="Optionally, the SLA Deadline specifies the agreed-upon response or resolution time for the item(s),&#xD;&#xA;indicating an explicitly set date for addressing them based on their criticality or urgency.&#xD;&#xA;SLA Deadline values are provided as a DateTime which must be less than 1000 days in the future.&#xD;&#xA;There is no default value for SLA Deadline if one is not provided. This value will override any&#xD;&#xA;value provided in the SLA input." expr="" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Item IDs" friendlyname="Item IDs" narrative="The IDs of the items which have been added to the queue, in the order of the collection of data passed that was input" stage="" />
+    </outputs>
+    <onsuccess>97c198ad-1ade-496b-9c0b-0c5e61af4e52</onsuccess>
+    <resource object="Blueprism.Automate.clsWorkQueuesActions" action="Add To Queue" />
+  </stage>
+  <stage stageid="97c198ad-1ade-496b-9c0b-0c5e61af4e52" name="Contar Cargados" type="Calculation">
+    <loginhibit onsuccess="true" />
+    <narrative>cuenta las filas correctamente cargadas</narrative>
+    <display x="105" y="165" />
+    <onsuccess>a05db215-117d-49fa-b8a0-45bde7c4da2d</onsuccess>
+    <calculation expression="[Cargados] + 1" stage="Cargados" />
+  </stage>
+</process>
