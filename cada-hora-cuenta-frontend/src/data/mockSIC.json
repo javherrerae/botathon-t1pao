@@ -1,0 +1,63 @@
+
+{
+  "simulado": true,
+  "porcentajeMeta": 90,
+  "registros": [
+    {
+      "id": 1,
+      "periodo": "2026-05",
+      "instituto": "Santiago",
+      "planificadas": 1200,
+      "ejecutadas": 1120
+    },
+    {
+      "id": 2,
+      "periodo": "2026-06",
+      "instituto": "Santiago",
+      "planificadas": 1300,
+      "ejecutadas": 1175
+    },
+    {
+      "id": 3,
+      "periodo": "2026-07",
+      "instituto": "Santiago",
+      "planificadas": 1250,
+      "ejecutadas": null
+    },
+    {
+      "id": 4,
+      "periodo": "2026-05",
+      "instituto": "Concepción",
+      "planificadas": 850,
+      "ejecutadas": 740
+    },
+    {
+      "id": 5,
+      "periodo": "2026-06",
+      "instituto": "Concepción",
+      "planificadas": 900,
+      "ejecutadas": 831
+    },
+    {
+      "id": 6,
+      "periodo": "2026-05",
+      "instituto": "Arica",
+      "planificadas": 420,
+      "ejecutadas": 388
+    },
+    {
+      "id": 7,
+      "periodo": "2026-06",
+      "instituto": "Arica",
+      "planificadas": 450,
+      "ejecutadas": 332
+    },
+    {
+      "id": 8,
+      "periodo": "2026-05",
+      "instituto": "Valparaíso",
+      "planificadas": 950,
+      "ejecutadas": 925
+    }
+  ]
+}
