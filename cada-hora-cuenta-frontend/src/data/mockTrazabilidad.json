@@ -1,0 +1,48 @@
+
+{
+  "simulado": true,
+  "historial": [
+    {
+      "id": 1,
+      "fecha": "2026-07-31",
+      "hora": "10:30",
+      "usuario": "Administrador Central",
+      "accion": "Cambio de jornada",
+      "profesionalId": "PROF-101",
+      "instituto": "Santiago",
+      "campo": "Horas semanales",
+      "valorAnterior": "44",
+      "valorNuevo": "42",
+      "justificacion": "Actualización contractual",
+      "origen": "BUK"
+    },
+    {
+      "id": 2,
+      "fecha": "2026-07-30",
+      "hora": "14:15",
+      "usuario": "Planificación Central",
+      "accion": "Cambio de asignación",
+      "profesionalId": "PROF-205",
+      "instituto": "Concepción",
+      "campo": "Asignación especial",
+      "valorAnterior": "Sin asignación",
+      "valorNuevo": "Líder de equipo",
+      "justificacion": "Nueva responsabilidad",
+      "origen": "Manual"
+    },
+    {
+      "id": 3,
+      "fecha": "2026-07-29",
+      "hora": "09:45",
+      "usuario": "Sistema RPA",
+      "accion": "Actualización de contrato",
+      "profesionalId": "PROF-302",
+      "instituto": "Valparaíso",
+      "campo": "Tipo de contrato",
+      "valorAnterior": "Plazo fijo",
+      "valorNuevo": "Indefinido",
+      "justificacion": "Actualización recibida desde BUK",
+      "origen": "Blue Prism"
+    }
+  ]
+}
