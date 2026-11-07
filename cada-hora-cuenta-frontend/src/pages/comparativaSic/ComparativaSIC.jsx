@@ -1,268 +1,162 @@
-
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
-  BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer
+  Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer,
+  Tooltip, XAxis, YAxis
 } from 'recharts'
+import { obtenerMeta, obtenerResumenInstituto } from '../../service/bluePrismService'
 
-import mockSIC from '../../data/mockSIC.json'
-
-// Clasifica el cumplimiento
-function obtenerEstado(porcentaje) {
-  if (porcentaje === null) {
-    return {
-      texto: 'Sin datos SIC',
-      estilo: 'bg-slate-100 text-slate-700'
-    }
-  }
-
-  if (porcentaje >= 90) {
-    return {
-      texto: 'Cumplimiento',
-      estilo: 'bg-green-100 text-green-800'
-    }
-  }
-
-  if (porcentaje >= 80) {
-    return {
-      texto: 'Alerta',
-      estilo: 'bg-yellow-100 text-yellow-900'
-    }
-  }
-
-  return {
-    texto: 'Déficit',
-    estilo: 'bg-red-100 text-red-800'
-  }
-}
-
-const formato = (valor) =>
-  valor.toLocaleString('es-CL')
+const numero = (valor) => Number(valor ?? 0).toLocaleString('es-CL')
+const mes = (periodo) => periodo || 'Sin período'
 
 function ComparativaSIC() {
-  const { registros, porcentajeMeta } = mockSIC
-
+  const [datos, setDatos] = useState({ resumen: [], meta: null })
+  const [cargando, setCargando] = useState(true)
+  const [errorCarga, setErrorCarga] = useState('')
+  const [intento, setIntento] = useState(0)
   const [instituto, setInstituto] = useState('Todos')
   const [periodo, setPeriodo] = useState('Todos')
 
-  const institutos = [
-    ...new Set(registros.map((r) => r.instituto))
-  ].sort()
+  useEffect(() => {
+    let activo = true
+    Promise.all([obtenerResumenInstituto(), obtenerMeta()])
+      .then(([resumen, meta]) => {
+        if (activo) {
+          setDatos({ resumen, meta })
+          setErrorCarga('')
+        }
+      })
+      .catch((error) => {
+        if (activo) setErrorCarga(error.message || 'No se pudieron cargar los datos')
+      })
+      .finally(() => {
+        if (activo) setCargando(false)
+      })
+    return () => { activo = false }
+  }, [intento])
 
-  const periodos = [
-    ...new Set(registros.map((r) => r.periodo))
-  ].sort()
+  const { resumen, meta } = datos
+  const institutos = useMemo(
+    () => [...new Set(resumen.map((fila) => fila.institutoNombre || fila.instituto))].sort(),
+    [resumen]
+  )
+  const periodos = useMemo(
+    () => [...new Set(resumen.map((fila) => fila.periodo))].sort(),
+    [resumen]
+  )
 
-  // Aplicar filtros
-  const filtrados = registros.filter((item) => {
+  const filtrados = useMemo(() => resumen.filter((fila) =>
+    (instituto === 'Todos' || (fila.institutoNombre || fila.instituto) === instituto) &&
+    (periodo === 'Todos' || fila.periodo === periodo)
+  ), [resumen, instituto, periodo])
+
+  const planificadas = filtrados.reduce((suma, fila) => suma + Number(fila.atencionesTotal ?? 0), 0)
+  const metaGestion = filtrados.reduce((suma, fila) => suma + Number(fila.metaGestion ?? 0), 0)
+  const porcentajeMeta = Number(meta?.parametros?.metaGestionPct ?? 0) * 100
+
+  const datosGrafico = useMemo(() => {
+    const grupos = new Map()
+    for (const fila of filtrados) {
+      const nombre = fila.institutoNombre || fila.instituto
+      const actual = grupos.get(nombre) || { instituto: nombre, planificadas: 0, meta: 0 }
+      actual.planificadas += Number(fila.atencionesTotal ?? 0)
+      actual.meta += Number(fila.metaGestion ?? 0)
+      grupos.set(nombre, actual)
+    }
+    return [...grupos.values()].sort((a, b) => a.instituto.localeCompare(b.instituto))
+  }, [filtrados])
+
+  if (cargando) return <p role="status" className="p-6 text-slate-600">Cargando planificación de referencia...</p>
+
+  if (errorCarga) {
     return (
-      (instituto === 'Todos' ||
-        item.instituto === instituto) &&
-      (periodo === 'Todos' ||
-        item.periodo === periodo)
+      <section role="alert" className="rounded-xl border border-red-200 bg-white p-6">
+        <h1 className="text-lg font-semibold text-red-800">No se pudo cargar la planificación</h1>
+        <p className="mt-2 text-sm text-slate-600">{errorCarga}</p>
+        <button
+          type="button"
+          className="mt-4 rounded-lg bg-[#003366] px-4 py-2 text-white"
+          onClick={() => {
+            setCargando(true)
+            setErrorCarga('')
+            setIntento((valor) => valor + 1)
+          }}
+        >Reintentar</button>
+      </section>
     )
-  })
-
-  // Solo comparar registros con información SIC
-  const comparables = filtrados.filter(
-    (item) => Number.isFinite(item.ejecutadas)
-  )
-
-  const planificadas = comparables.reduce(
-    (total, item) => total + item.planificadas, 0
-  )
-
-  const ejecutadas = comparables.reduce(
-    (total, item) => total + item.ejecutadas, 0
-  )
-
-  const cumplimiento = planificadas > 0
-    ? (ejecutadas / planificadas) * 100
-    : null
-
-  const pendientes = filtrados.length - comparables.length
-
-  // Agrupar las cifras por instituto
-  const datosGrafico = institutos
-    .map((nombre) => {
-      const filas = comparables.filter(
-        (item) => item.instituto === nombre
-      )
-
-      return {
-        instituto: nombre,
-        planificadas: filas.reduce(
-          (suma, item) => suma + item.planificadas, 0
-        ),
-        ejecutadas: filas.reduce(
-          (suma, item) => suma + item.ejecutadas, 0
-        )
-      }
-    })
-    .filter((item) =>
-      item.planificadas > 0 &&
-      (instituto === 'Todos' || item.instituto === instituto)
-    )
+  }
 
   const indicadores = [
-    {
-      titulo: 'Atenciones planificadas',
-      valor: formato(planificadas)
-    },
-    {
-      titulo: 'Atenciones ejecutadas',
-      valor: formato(ejecutadas)
-    },
-    {
-      titulo: 'Cumplimiento',
-      valor: cumplimiento === null
-        ? 'Sin datos'
-        : `${cumplimiento.toFixed(1)}%`
-    },
-    {
-      titulo: 'Registros sin SIC',
-      valor: pendientes
-    }
+    { titulo: 'Atenciones planificadas', valor: numero(planificadas) },
+    { titulo: `Meta de gestión (${numero(porcentajeMeta)} %)`, valor: numero(metaGestion) },
+    { titulo: 'Atenciones ejecutadas', valor: 'Sin información SIC' },
+    { titulo: 'Cumplimiento real', valor: 'No disponible' }
   ]
 
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-sm font-semibold text-[#003366]">
-          GESTIÓN ASISTENCIAL
-        </p>
-
-        <h1 className="mt-1 text-2xl font-bold">
-          Comparativa Planificado vs. Ejecutado
-        </h1>
-
-        <p className="mt-1 text-slate-600">
-          Seguimiento de las atenciones registradas en SIC.
-        </p>
-
+        <p className="text-sm font-semibold text-[#003366]">GESTIÓN ASISTENCIAL</p>
+        <h1 className="mt-1 text-2xl font-bold text-slate-900">Comparativa Planificado vs. Ejecutado</h1>
+        <p className="mt-1 text-slate-600">Planificación mensual por instituto y seguimiento de los datos pendientes de SIC.</p>
         <p className="mt-2 text-sm font-semibold text-amber-800">
-          Modo demostración: datos simulados
+          Modo demostración: cifras de planificación representadas en un JSON de referencia, no una ejecución real de Blue Prism.
         </p>
       </header>
 
-      {/* Filtros */}
-      <section className="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-2">
+      <section className="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-2" aria-label="Filtros de comparación">
         <div>
-          <label
-            htmlFor="sic-instituto"
-            className="mb-1 block text-sm font-medium"
-          >
-            Instituto
-          </label>
-
-          <select
-            id="sic-instituto"
-            value={instituto}
-            onChange={(e) => setInstituto(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 p-2"
-          >
+          <label htmlFor="sic-instituto" className="mb-1 block text-sm font-medium">Instituto</label>
+          <select id="sic-instituto" value={instituto} onChange={(e) => setInstituto(e.target.value)} className="w-full rounded-lg border border-slate-300 p-2">
             <option value="Todos">Todos los institutos</option>
-            {institutos.map((nombre) => (
-              <option key={nombre} value={nombre}>
-                {nombre}
-              </option>
-            ))}
+            {institutos.map((nombre) => <option key={nombre} value={nombre}>{nombre}</option>)}
           </select>
         </div>
-
         <div>
-          <label
-            htmlFor="sic-periodo"
-            className="mb-1 block text-sm font-medium"
-          >
-            Período
-          </label>
-
-          <select
-            id="sic-periodo"
-            value={periodo}
-            onChange={(e) => setPeriodo(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 p-2"
-          >
+          <label htmlFor="sic-periodo" className="mb-1 block text-sm font-medium">Período</label>
+          <select id="sic-periodo" value={periodo} onChange={(e) => setPeriodo(e.target.value)} className="w-full rounded-lg border border-slate-300 p-2">
             <option value="Todos">Todos los períodos</option>
-            {periodos.map((mes) => (
-              <option key={mes} value={mes}>
-                {mes}
-              </option>
-            ))}
+            {periodos.map((valor) => <option key={valor} value={valor}>{mes(valor)}</option>)}
           </select>
         </div>
       </section>
 
-      {/* Indicadores */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Indicadores de planificación y SIC">
         {indicadores.map((item) => (
-          <article
-            key={item.titulo}
-            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <p className="text-sm text-slate-600">
-              {item.titulo}
-            </p>
-            <p className="mt-3 text-3xl font-bold text-[#003366]">
-              {item.valor}
-            </p>
+          <article key={item.titulo} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-slate-600">{item.titulo}</p>
+            <p className="mt-3 text-xl font-bold text-[#003366] sm:text-2xl">{item.valor}</p>
           </article>
         ))}
       </section>
 
-      <p className="text-sm text-slate-600">
-        Los indicadores y el gráfico consideran únicamente
-        períodos con datos SIC disponibles. La meta de gestión
-        configurada para esta demostración es {porcentajeMeta}%.
+      <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        <strong>Sin información SIC.</strong> El JSON actual contiene planificación BUK, pero no atenciones ejecutadas.
+        No se calcula cumplimiento ni se considera el dato ausente como cero.
+        Los cambios de parámetros hechos en la interfaz no recalculan este JSON: eso necesitará integración con el backend.
       </p>
 
-      {/* Gráfico */}
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold">
-          Atenciones por instituto
-        </h2>
-
-        {datosGrafico.length > 0 ? (
-          <div
-            className="h-80 w-full"
-            role="img"
-            aria-label="Comparación gráfica de atenciones planificadas y ejecutadas por instituto. Los mismos valores están disponibles en la tabla inferior."
-          >
+        <h2 className="mb-1 text-lg font-semibold">Planificación y meta por instituto</h2>
+        <p className="mb-4 text-sm text-slate-600">Este gráfico muestra solo planificación y meta, no ejecución SIC.</p>
+        {datosGrafico.length ? (
+          <div className="h-80 w-full" role="img" aria-label="Atenciones planificadas y meta por instituto; los valores también aparecen en la tabla.">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={datosGrafico}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="instituto" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={(valor) => numero(valor)} />
                 <Legend />
-                <Bar
-                  dataKey="planificadas"
-                  name="Planificadas"
-                  fill="#003366"
-                />
-                <Bar
-                  dataKey="ejecutadas"
-                  name="Ejecutadas"
-                  fill="#16A34A"
-                />
+                <Bar dataKey="planificadas" name="Planificadas" fill="#003366" />
+                <Bar dataKey="meta" name="Meta de gestión" fill="#16A34A" />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        ) : (
-          <p className="text-slate-600">
-            No hay datos SIC para generar el gráfico.
-          </p>
-        )}
+        ) : <p className="text-slate-600">No hay registros para los filtros seleccionados.</p>}
       </section>
 
-      {/* Tabla */}
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold">
-          Detalle mensual de cumplimiento
-        </h2>
-
+        <h2 className="mb-4 text-lg font-semibold">Detalle mensual ({filtrados.length} filas instituto-período)</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-100">
@@ -270,64 +164,23 @@ function ComparativaSIC() {
                 <th scope="col" className="p-3">Período</th>
                 <th scope="col" className="p-3">Instituto</th>
                 <th scope="col" className="p-3">Planificadas</th>
-                <th scope="col" className="p-3">Ejecutadas</th>
+                <th scope="col" className="p-3">Meta</th>
+                <th scope="col" className="p-3">Ejecutadas SIC</th>
                 <th scope="col" className="p-3">Cumplimiento</th>
-                <th scope="col" className="p-3">Estado</th>
               </tr>
             </thead>
-
             <tbody>
-              {filtrados.map((item) => {
-                const tieneSIC = Number.isFinite(
-                  item.ejecutadas
-                )
-
-                const porcentaje = tieneSIC &&
-                  item.planificadas > 0
-                  ? (item.ejecutadas / item.planificadas) * 100
-                  : null
-
-                const estado = obtenerEstado(porcentaje)
-
-                return (
-                  <tr
-                    key={item.id}
-                    className="border-b border-slate-200"
-                  >
-                    <td className="p-3">{item.periodo}</td>
-                    <td className="p-3">{item.instituto}</td>
-                    <td className="p-3">
-                      {formato(item.planificadas)}
-                    </td>
-                    <td className="p-3">
-                      {tieneSIC
-                        ? formato(item.ejecutadas)
-                        : 'Sin datos SIC'}
-                    </td>
-                    <td className="p-3">
-                      {porcentaje === null
-                        ? '—'
-                        : `${porcentaje.toFixed(1)}%`}
-                    </td>
-                    <td className="p-3">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${estado.estilo}`}>
-                        {estado.texto}
-                      </span>
-                    </td>
-                  </tr>
-                )
-              })}
-
-              {filtrados.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="p-5 text-center text-slate-600"
-                  >
-                    No hay registros para los filtros seleccionados.
-                  </td>
+              {filtrados.map((fila) => (
+                <tr key={`${fila.it}-${fila.periodo}`} className="border-b border-slate-200">
+                  <td className="p-3">{mes(fila.periodo)}</td>
+                  <td className="p-3">{fila.institutoNombre || fila.instituto}</td>
+                  <td className="p-3">{numero(fila.atencionesTotal)}</td>
+                  <td className="p-3">{numero(fila.metaGestion)}</td>
+                  <td className="p-3 text-slate-600">Sin información SIC</td>
+                  <td className="p-3">—</td>
                 </tr>
-              )}
+              ))}
+              {filtrados.length === 0 && <tr><td colSpan={6} className="p-6 text-center text-slate-600">No hay registros para estos filtros.</td></tr>}
             </tbody>
           </table>
         </div>
