@@ -21,8 +21,15 @@
    "profesionales": 462,
    "errores": 232,
    "novedades": 205,
-   "resumenInstituto": 105
-  }
+   "resumenInstituto": 105,
+   "multiInstituto": 52,
+   "profesionalesMultiInstituto": 8
+  },
+  "notas": [
+   "multiInstituto: leído de la hoja 'Excepciones' del Excel de referencia (horas por instituto y mes) y validado por el bot contra las horas del contrato BUK. Regla: suma > contrato = ERROR, suma < contrato = ADVERTENCIA, igual = OK.",
+   "Los errores de procesamiento del bot se muestran en /monitoreo (ejecuciones[].errores); /excepciones muestra multiInstituto.",
+   "Meses en que el profesional no tiene contrato y la distribución suma 0 se omiten."
+  ]
  },
  "ejecuciones": [
   {
@@ -80370,6 +80377,1044 @@
    "metaGestion": 2337.3,
    "registros": 16,
    "excepciones": 2
+  }
+ ],
+ "multiInstituto": [
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900013,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 35,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 17
+    },
+    {
+     "instituto": "OHi",
+     "horas": 18
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 40,
+   "institutoContrato": "PMo",
+   "distribucion": [
+    {
+     "instituto": "PMo",
+     "horas": 40
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 40,
+   "institutoContrato": "PMo",
+   "distribucion": [
+    {
+     "instituto": "PMo",
+     "horas": 40
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 8,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 8,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 8,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 8,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 8,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 8,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 8,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 8,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900219,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 8,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 8,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 44,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 44,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 44,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 44,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 44,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 44,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 44,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": -2,
+   "estado": "ADVERTENCIA",
+   "motivo": "Distribución suma 42 h y el contrato tiene 44 h"
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 42,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 42,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900248,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 42,
+   "institutoContrato": "Iqu",
+   "distribucion": [
+    {
+     "instituto": "Iqu",
+     "horas": 36
+    },
+    {
+     "instituto": "Coy",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 27
+    },
+    {
+     "instituto": "Cal",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 27
+    },
+    {
+     "instituto": "Cal",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 27
+    },
+    {
+     "instituto": "Cal",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 35
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 35
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 35
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900323,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 35,
+   "institutoContrato": "Ant",
+   "distribucion": [
+    {
+     "instituto": "Ant",
+     "horas": 35
+    }
+   ],
+   "sumaDistribucion": 35,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 42,
+   "institutoContrato": "Val",
+   "distribucion": [
+    {
+     "instituto": "Val",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 42,
+   "institutoContrato": "Val",
+   "distribucion": [
+    {
+     "instituto": "Val",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 42,
+   "institutoContrato": "Val",
+   "distribucion": [
+    {
+     "instituto": "Val",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 8
+    }
+   ],
+   "sumaDistribucion": 42,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 32,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "Cop",
+     "horas": 6
+    },
+    {
+     "instituto": "San",
+     "horas": 26
+    }
+   ],
+   "sumaDistribucion": 32,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 32,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "Cop",
+     "horas": 6
+    },
+    {
+     "instituto": "San",
+     "horas": 26
+    }
+   ],
+   "sumaDistribucion": 32,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 32,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "Cop",
+     "horas": 6
+    },
+    {
+     "instituto": "San",
+     "horas": 26
+    }
+   ],
+   "sumaDistribucion": 32,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900364,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 32,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "Cop",
+     "horas": 6
+    },
+    {
+     "instituto": "San",
+     "horas": 26
+    }
+   ],
+   "sumaDistribucion": 32,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900414,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 40,
+   "institutoContrato": "Coq",
+   "distribucion": [
+    {
+     "instituto": "Coq",
+     "horas": 34
+    },
+    {
+     "instituto": "Cop",
+     "horas": 6
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-01-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-02-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-03-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-04-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-05-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900451,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 27,
+   "institutoContrato": "OHi",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    },
+    {
+     "instituto": "OHi",
+     "horas": 12
+    }
+   ],
+   "sumaDistribucion": 27,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900462,
+   "cargo": "MEDICO GENERAL",
+   "periodo": "2026-05-01",
+   "horasContrato": 40,
+   "institutoContrato": "San",
+   "distribucion": [
+    {
+     "instituto": "San",
+     "horas": 40
+    }
+   ],
+   "sumaDistribucion": 40,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900462,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-06-01",
+   "horasContrato": 15,
+   "institutoContrato": "Cal",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    }
+   ],
+   "sumaDistribucion": 15,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
+  },
+  {
+   "personaId": 900462,
+   "cargo": "MEDICO FISIATRA",
+   "periodo": "2026-07-01",
+   "horasContrato": 15,
+   "institutoContrato": "Cal",
+   "distribucion": [
+    {
+     "instituto": "Cal",
+     "horas": 15
+    }
+   ],
+   "sumaDistribucion": 15,
+   "diferencia": 0,
+   "estado": "OK",
+   "motivo": null
   }
  ]
 }

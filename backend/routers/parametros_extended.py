@@ -101,7 +101,25 @@ def _leer() -> Parametros:
         mes=MESES[i] if isinstance(mes,(int,float)) else str(mes).strip()
         semanas.append({"periodo":periodo,"mes":mes,"semanasHabiles":valor})
     cfg=_config()
-    return Parametros(cargos=cargos,semanas=semanas,metaGestionPct=cfg.get("metaGestionPct",0.9),version=cfg.get("version",1),actualizado=cfg.get("actualizado") or datetime.fromtimestamp(EXCEL_PATH.stat().st_mtime).isoformat(timespec="seconds"))
+    meta=_meta_excel(wb)
+    return Parametros(cargos=cargos,semanas=semanas,metaGestionPct=meta if meta is not None else cfg.get("metaGestionPct",0.9),version=cfg.get("version",1),actualizado=cfg.get("actualizado") or datetime.fromtimestamp(EXCEL_PATH.stat().st_mtime).isoformat(timespec="seconds"))
+
+# La meta de gestión vive en la hoja "General" del Excel, que es lo que lee Blue Prism.
+# (Antes solo quedaba en parametros_config.json y el bot nunca se enteraba del cambio.)
+HOJA_GENERAL = "General"
+
+def _meta_excel(wb):
+    if HOJA_GENERAL not in wb.sheetnames: return None
+    for fila in wb[HOJA_GENERAL].iter_rows(min_row=2, max_col=2, values_only=True):
+        if fila and str(fila[0] or "").strip() == "MetaGestionPct" and fila[1] is not None:
+            return float(fila[1])
+    return None
+
+def _escribir_general(wb, meta: float):
+    if HOJA_GENERAL in wb.sheetnames: del wb[HOJA_GENERAL]
+    ws = wb.create_sheet(HOJA_GENERAL)
+    ws.append(["Parametro", "Valor"])
+    ws.append(["MetaGestionPct", meta])
 
 def _guardar(data: Parametros):
     if EXCEL_PATH.exists(): wb=openpyxl.load_workbook(EXCEL_PATH)
@@ -121,6 +139,7 @@ def _guardar(data: Parametros):
     for i,s in enumerate(data.semanas,2):
         ws.cell(i,1).number_format="@"
         for j,v in enumerate([s.periodo,s.mes,s.semanasHabiles],1): ws.cell(i,j).value=v
+    _escribir_general(wb, data.metaGestionPct)
     wb.save(EXCEL_PATH)
 
 @router.get("")

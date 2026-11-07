@@ -4,7 +4,7 @@ MVP React/Vite + FastAPI. Ver `cada-hora-cuenta-frontend/README.md` para los pas
 
 - Datos simulados operativos: `mockDataActualizado.json`.
 - Parámetros Blue Prism: `Parametros_Bot.xlsx`.
-- Backend: `backend/` (sin base de datos por ahora).
+- Backend: `backend/` con PostgreSQL (datos reales del bot) o mock como plan B. Ver `backend/POSTGRES.md`.
 - Frontend: `cada-hora-cuenta-frontend/`.
 
 El backend sirve los datos mock al frontend y gestiona la lectura/escritura del Excel de parámetros. Blue Prism debe leer el archivo actualizado al comienzo de la siguiente ejecución.

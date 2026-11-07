@@ -6,3 +6,6 @@
 backend/.venv/
 parametros_config.json
 parametros_historial.json
+
+# Configuración local con credenciales
+backend/.env

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { obtenerEjecuciones, obtenerErroresEjecucion } from '../../service/api'
 import Badge from '../../components/ui/Badge'
+import ImportarEjecucion from './ImportarEjecucion'
 
 const ESTADO_CONFIG = {
   COMPLETADO: { type: 'success', label: 'Completado' },
@@ -16,11 +17,12 @@ function MonitoreoRPA() {
   const [cargando, setCargando] = useState(true)
   const [cargandoErrores, setCargandoErrores] = useState(false)
 
-  useEffect(() => {
+  const cargarEjecuciones = () =>
     obtenerEjecuciones()
       .then((r) => setEjecuciones(r.ejecuciones ?? []))
       .finally(() => setCargando(false))
-  }, [])
+
+  useEffect(() => { cargarEjecuciones() }, [])
 
   const verErrores = async (ej) => {
     setEjecucionActiva(ej)
@@ -42,6 +44,8 @@ function MonitoreoRPA() {
         <h1 className="mt-1 text-2xl font-bold text-slate-900">Monitoreo Blue Prism</h1>
         <p className="mt-1 text-slate-500">Supervisión de archivos procesados por el bot.</p>
       </div>
+
+      <ImportarEjecucion onImportado={cargarEjecuciones} />
 
       {/* Tarjetas de ejecuciones */}
       {ejecuciones.map((ej) => {

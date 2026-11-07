@@ -3,9 +3,9 @@ routers/excepciones.py
 Endpoints de excepciones Blue Prism (Business/System Exceptions).
 Extrae los errores de la única ejecución disponible en el mock.
 """
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from data_loader import get_ejecuciones
+from data_loader import get_ejecuciones, get_multi_instituto
 
 router = APIRouter(prefix="/api/excepciones", tags=["Excepciones Blue Prism"])
 
@@ -118,6 +118,24 @@ def _multi_leer():
 
 def _multi_guardar(rows):
     MULTI_PATH.write_text(json.dumps(rows,ensure_ascii=False,indent=2),encoding="utf-8")
+
+@router.get("/multi-instituto/validacion")
+def validacion_multi_instituto(estado: Optional[str] = Query(None, description="OK | ADVERTENCIA | ERROR")):
+    """
+    Distribución multi-instituto MENSUAL, validada contra las horas del contrato
+    (suma > contrato = ERROR, suma < contrato = ADVERTENCIA, igual = OK).
+    Formato acordado con el bot. Mientras el bot no la entregue, viene marcada como simulada.
+    """
+    filas = get_multi_instituto()
+    if estado:
+        filas = [f for f in filas if f.get("estado") == estado.upper()]
+    return {
+        "total": len(filas),
+        "conObservaciones": sum(1 for f in filas if f.get("estado") != "OK"),
+        "simulado": any(f.get("simulado", True) for f in filas) if filas else True,
+        "registros": filas,
+    }
+
 
 @router.get("/multi-instituto")
 def listar_multi_instituto():

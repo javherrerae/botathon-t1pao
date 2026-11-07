@@ -4,3 +4,6 @@ python-multipart>=0.0.6
 pydantic>=2.0.0
 
 openpyxl>=3.1.0
+
+# PostgreSQL (driver v3 con binarios incluidos: no requiere compilar en Windows)
+psycopg[binary]>=3.2

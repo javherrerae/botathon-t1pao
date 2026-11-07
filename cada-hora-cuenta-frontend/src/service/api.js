@@ -115,3 +115,21 @@ export const actualizarMetaGestion = (valor, justificacion, responsable) =>
 // Excepciones de distribución multi-instituto (persistencia JSON temporal, sin BD).
 export const obtenerExcepcionesMultiInstituto = () => get('/api/excepciones/multi-instituto')
 export const registrarExcepcionMultiInstituto = (datos) => post('/api/excepciones/multi-instituto', datos)
+
+// ─── Importación de ejecuciones del bot (PostgreSQL) ─────────────────────────
+
+// Importa el Resultados_*.xlsx más reciente de la carpeta compartida con la VM.
+export const importarUltimaEjecucion = () => post('/api/importaciones/ultima', {})
+
+// Plan B: sube a mano un Resultados_*.xlsx generado por el bot.
+export async function importarArchivoEjecucion(archivo) {
+  const form = new FormData()
+  form.append('archivo', archivo)
+  const res = await fetch(`${BASE_URL}/api/importaciones/archivo`, { method: 'POST', body: form })
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const d = body.detail
+    throw new Error(typeof d === 'string' ? d : d?.mensaje ?? `API error ${res.status}`)
+  }
+  return body
+}
