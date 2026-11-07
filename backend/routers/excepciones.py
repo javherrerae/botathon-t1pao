@@ -85,3 +85,58 @@ def resumen_excepciones():
         "porMotivo": resumen_motivo,
         "porInstituto": resumen_inst,
     }
+
+
+# Excepciones de distribución multi-instituto: persistencia JSON temporal (sin BD).
+from pathlib import Path
+import json
+from pydantic import BaseModel, Field, model_validator
+
+MULTI_PATH = Path(__file__).resolve().parents[1] / "excepciones_multi_instituto.json"
+
+class Distribucion(BaseModel):
+    instituto: str = Field(min_length=2)
+    horas: float = Field(ge=0)
+
+class ExcepcionMultiInstituto(BaseModel):
+    personaId: int = Field(gt=0)
+    cargo: str = Field(min_length=2)
+    periodoId: str = Field(pattern=r"^(ENE-ABR|MAY-DIC)$")
+    horasContrato: float = Field(gt=0)
+    distribucion: list[Distribucion] = Field(min_length=2)
+    observaciones: str = ""
+    @model_validator(mode="after")
+    def validar_suma(self):
+        nombres=[x.instituto.strip().casefold() for x in self.distribucion]
+        if len(nombres)!=len(set(nombres)): raise ValueError("No repitas institutos dentro del mismo periodo")
+        if sum(x.horas for x in self.distribucion)>self.horasContrato+1e-8: raise ValueError("La distribución supera las horas del contrato")
+        return self
+
+def _multi_leer():
+    if MULTI_PATH.exists(): return json.loads(MULTI_PATH.read_text(encoding="utf-8"))
+    return []
+
+def _multi_guardar(rows):
+    MULTI_PATH.write_text(json.dumps(rows,ensure_ascii=False,indent=2),encoding="utf-8")
+
+@router.get("/multi-instituto")
+def listar_multi_instituto():
+    rows=_multi_leer()
+    return {"total":len(rows),"excepciones":rows,"simulado":True}
+
+@router.post("/multi-instituto")
+def crear_multi_instituto(body: ExcepcionMultiInstituto):
+    rows=_multi_leer()
+    if any(x["personaId"]==body.personaId and x["periodoId"]==body.periodoId for x in rows):
+        raise HTTPException(409,detail="Ya existe una distribución para esa persona y periodo")
+    row=body.model_dump()
+    row["id"]=f"EXC-{body.personaId}-{body.periodoId}"
+    row["estado"]="VALIDADA" if abs(sum(x.horas for x in body.distribucion)-body.horasContrato)<1e-8 else "INCOMPLETA"
+    rows.append(row); _multi_guardar(rows)
+    return {"mensaje":"Excepción registrada","excepcion":row,"simulado":True}
+
+@router.delete("/multi-instituto/{excepcion_id}")
+def eliminar_multi_instituto(excepcion_id: str):
+    rows=_multi_leer(); nuevos=[x for x in rows if x.get("id")!=excepcion_id]
+    if len(nuevos)==len(rows): raise HTTPException(404,detail="Excepción no encontrada")
+    _multi_guardar(nuevos); return {"mensaje":"Excepción eliminada"}

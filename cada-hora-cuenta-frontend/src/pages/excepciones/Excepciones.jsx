@@ -1,32 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import Badge from '../../components/ui/Badge'
+import Button from '../../components/ui/Button'
 import Pagination from '../../components/ui/Pagination'
+import { obtenerExcepcionesMultiInstituto, registrarExcepcionMultiInstituto } from '../../service/api'
+import { PROFESIONALES_MULTI } from '../../data/mockMultiInstituto'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE=10
+const PERIODOS=[{value:'ENE-ABR',label:'Enero – Abril 2026'},{value:'MAY-DIC',label:'Mayo – Diciembre 2026'}]
+const INSTITUTOS=['Arica','Iquique','Antofagasta','Calama','Copiapó','Coquimbo','Valparaíso',"O'Higgins",'Talca','Concepción','Ñuble','Temuco','Puerto Montt','Coyhaique','Valdivia','Castro','Santiago']
+const seed=PROFESIONALES_MULTI.flatMap(p=>p.periodos.map(periodo=>({id:`MOCK-${p.personaId}-${periodo.periodoId}`,personaId:p.personaId,cargo:p.cargo,periodoId:periodo.periodoId,horasContrato:periodo.horasContrato,distribucion:periodo.distribucion,observaciones:p.observaciones,estado:Math.abs(periodo.distribucion.reduce((a,x)=>a+x.horas,0)-periodo.horasContrato)<.001?'VALIDADA':periodo.distribucion.reduce((a,x)=>a+x.horas,0)>periodo.horasContrato?'ERROR':'INCOMPLETA'})))
 
-function Page() {
-  const [page, setPage] = useState(1)
-  // No hay datos reales aún, pero mantenemos la interfaz para futuro
-  const totalItems = 0
-  const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1
-  return (
-    <section className="space-y-4">
-      <div>
-        <p className="text-sm font-semibold text-[#003366]">MÓDULO</p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-900">Excepciones multi-instituto</h1>
-        <p className="mt-1 text-slate-500">Revisión de profesionales con distribución de jornada entre sedes.</p>
-      </div>
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-slate-600">Vista inicial preparada. Funcionalidad pendiente de desarrollo en la siguiente fase.</p>
-      </div>
-      {/* Paginación placeholder */}
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        totalItems={totalItems}
-        pageSize={PAGE_SIZE}
-        onChange={setPage}
-      />
-    </section>
-  )
+export default function Excepciones(){
+ const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[page,setPage]=useState(1),[filtro,setFiltro]=useState(''),[error,setError]=useState(''),[success,setSuccess]=useState(''),[saving,setSaving]=useState(false)
+ const [form,setForm]=useState({personaId:'',cargo:'',periodoId:'ENE-ABR',horasContrato:'',observaciones:'',distribucion:[{instituto:'Santiago',horas:''},{instituto:'Valparaíso',horas:''}]})
+ const cargar=()=>obtenerExcepcionesMultiInstituto().then(r=>setRows(r.excepciones?.length?r.excepciones:seed)).catch(()=>setRows(seed)).finally(()=>setLoading(false))
+ useEffect(()=>{cargar()},[])
+ const filtered=useMemo(()=>rows.filter(r=>!filtro||String(r.personaId).includes(filtro)||r.cargo.toLowerCase().includes(filtro.toLowerCase())),[rows,filtro])
+ const pageRows=filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE)
+ const setField=(k,v)=>setForm(p=>({...p,[k]:v}))
+ const setDist=(i,k,v)=>setForm(p=>({...p,distribucion:p.distribucion.map((d,n)=>n===i?{...d,[k]:v}:d)}))
+ const agregarFila=()=>setForm(p=>({...p,distribucion:[...p.distribucion,{instituto:'',horas:''}]}))
+ const total=form.distribucion.reduce((a,x)=>a+(Number(x.horas)||0),0)
+ const guardar=async(e)=>{e.preventDefault();setError('');setSuccess('');const payload={...form,personaId:Number(form.personaId),horasContrato:Number(form.horasContrato),distribucion:form.distribucion.map(x=>({...x,horas:Number(x.horas)}))};if(!payload.personaId||!payload.cargo||!payload.horasContrato||payload.distribucion.some(x=>!x.instituto||x.horas<0)||payload.distribucion.length<2)return setError('Completa persona, cargo, jornada y al menos dos institutos.');if(total>Number(form.horasContrato))return setError('La suma distribuida no puede superar las horas del contrato.');setSaving(true);try{const r=await registrarExcepcionMultiInstituto(payload);setSuccess(r.mensaje||'Excepción registrada.');setForm({personaId:'',cargo:'',periodoId:'ENE-ABR',horasContrato:'',observaciones:'',distribucion:[{instituto:'Santiago',horas:''},{instituto:'Valparaíso',horas:''}]});await cargar()}catch(err){setError(err.message)}finally{setSaving(false)}}
+ return <section className="space-y-6"><header><p className="text-sm font-semibold text-[#003366]">MÓDULO</p><h1 className="mt-1 text-2xl font-bold">Excepciones multi-instituto</h1><p className="mt-1 text-sm text-slate-500">Registra cómo se reparte la jornada de una persona entre institutos. No se modifica el contrato original.</p></header>
+ <form onSubmit={guardar} className="rounded-xl border bg-white p-5 shadow-sm space-y-4"><div><h2 className="font-semibold">Nueva distribución excepcional</h2><p className="text-xs text-slate-500">Se solicita solo la información necesaria para validar el reparto de horas.</p></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"><label className="text-sm">Persona ID<input required type="number" min="1" value={form.personaId} onChange={e=>setField('personaId',e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2"/></label><label className="text-sm">Cargo<input required value={form.cargo} onChange={e=>setField('cargo',e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2" placeholder="Ej. KINESIOLOGO"/></label><label className="text-sm">Periodo<select value={form.periodoId} onChange={e=>setField('periodoId',e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2">{PERIODOS.map(p=><option key={p.value} value={p.value}>{p.label}</option>)}</select></label><label className="text-sm">Horas contrato<input required type="number" min="0.1" step="0.25" value={form.horasContrato} onChange={e=>setField('horasContrato',e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2"/></label></div>
+ <div className="space-y-2"><div className="flex items-center justify-between"><h3 className="text-sm font-semibold">Reparto por instituto</h3><Button type="button" variant="outline" onClick={agregarFila}>+ Agregar instituto</Button></div>{form.distribucion.map((d,i)=><div key={i} className="grid grid-cols-[1fr_130px] gap-2"><select value={d.instituto} onChange={e=>setDist(i,'instituto',e.target.value)} className="rounded-lg border px-3 py-2 text-sm"><option value="">Seleccionar instituto</option>{INSTITUTOS.map(x=><option key={x}>{x}</option>)}</select><input aria-label={`Horas instituto ${i+1}`} type="number" min="0" step="0.25" placeholder="Horas" value={d.horas} onChange={e=>setDist(i,'horas',e.target.value)} className="rounded-lg border px-3 py-2 text-sm"/></div>)}<p className={`text-xs ${total>Number(form.horasContrato||0)?'text-red-600':'text-slate-500'}`}>Total distribuido: {total.toLocaleString('es-CL')} h / {Number(form.horasContrato||0).toLocaleString('es-CL')} h contratadas</p></div>
+ <label className="block text-sm">Observaciones (opcional)<input value={form.observaciones} onChange={e=>setField('observaciones',e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2" placeholder="Motivo del reparto excepcional"/></label>{error&&<p role="alert" className="text-sm text-red-700">{error}</p>}{success&&<p role="status" className="text-sm text-green-700">{success}</p>}<Button type="submit" disabled={saving}>{saving?'Guardando…':'Registrar excepción'}</Button></form>
+ <section className="rounded-xl border bg-white p-5 shadow-sm space-y-3"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-semibold">Distribuciones registradas</h2><p className="text-xs text-slate-500">Incluye casos simulados de referencia hasta conectar la carga real del bot.</p></div><input value={filtro} onChange={e=>{setFiltro(e.target.value);setPage(1)}} placeholder="Buscar persona o cargo" className="rounded-lg border px-3 py-2 text-sm"/></div>{loading?<p className="text-sm text-slate-500">Cargando…</p>:<><div className="space-y-3">{pageRows.map(r=><article key={r.id} className="rounded-lg border border-slate-200 p-3"><div className="flex flex-wrap justify-between gap-2"><div><b>Persona {r.personaId}</b><span className="ml-2 text-sm text-slate-500">{r.cargo}</span><p className="text-xs text-slate-500">{PERIODOS.find(p=>p.value===r.periodoId)?.label} · contrato {r.horasContrato} h/sem</p></div><Badge type={r.estado==='VALIDADA'?'success':r.estado==='ERROR'?'danger':'warning'}>{r.estado}</Badge></div><div className="mt-2 flex flex-wrap gap-2">{r.distribucion.map(d=><span key={d.instituto} className="rounded-md bg-slate-50 px-2 py-1 text-xs">{d.instituto}: <b>{d.horas} h</b></span>)}</div>{r.observaciones&&<p className="mt-2 text-xs text-slate-500">{r.observaciones}</p>}</article>)}</div><Pagination page={page} totalPages={Math.max(1,Math.ceil(filtered.length/PAGE_SIZE))} totalItems={filtered.length} pageSize={PAGE_SIZE} onChange={setPage}/></>}</section></section>
 }
-export default Page

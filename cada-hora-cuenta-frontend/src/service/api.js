@@ -111,3 +111,7 @@ export const obtenerHistorialParametros = () => get('/api/parametros/historial')
 
 export const actualizarMetaGestion = (valor, justificacion, responsable) =>
   patch('/api/parametros/meta-gestion', { campo: 'metaGestionPct', valor, justificacion, responsable })
+
+// Excepciones de distribución multi-instituto (persistencia JSON temporal, sin BD).
+export const obtenerExcepcionesMultiInstituto = () => get('/api/excepciones/multi-instituto')
+export const registrarExcepcionMultiInstituto = (datos) => post('/api/excepciones/multi-instituto', datos)

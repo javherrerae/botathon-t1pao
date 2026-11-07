@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { obtenerNovedades, actualizarEstadoNovedad } from '../../service/api'
 import Badge from '../../components/ui/Badge'
+import Pagination from '../../components/ui/Pagination'
+
+const PAGE_SIZE = 15
 
 const TIPO_LABELS = {
   FIN_CONTRATO: 'Fin de contrato',
@@ -22,6 +25,7 @@ function Trazabilidad() {
   const [filtroTipo, setFiltroTipo] = useState('')
   const [cargando, setCargando] = useState(true)
   const [actualizando, setActualizando] = useState(null)
+  const [page, setPage] = useState(1)
 
   const cargar = (params = {}) => {
     setCargando(true)
@@ -59,6 +63,8 @@ function Trazabilidad() {
     }
   }
 
+  const totalPages = Math.max(1, Math.ceil(novedades.length / PAGE_SIZE))
+  const paginadas = novedades.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const pendientes = novedades.filter((n) => n.estadoValidacion === 'PENDIENTE').length
 
   return (
@@ -78,7 +84,7 @@ function Trazabilidad() {
       <div className="flex flex-wrap gap-3">
         <select
           value={filtroEstado}
-          onChange={(e) => setFiltroEstado(e.target.value)}
+          onChange={(e) => { setFiltroEstado(e.target.value); setPage(1) }}
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-[#003366] focus:outline-none"
         >
           <option value="">Todos los estados</option>
@@ -88,7 +94,7 @@ function Trazabilidad() {
         </select>
         <select
           value={filtroTipo}
-          onChange={(e) => setFiltroTipo(e.target.value)}
+          onChange={(e) => { setFiltroTipo(e.target.value); setPage(1) }}
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-[#003366] focus:outline-none"
         >
           <option value="">Todos los tipos</option>
@@ -103,7 +109,7 @@ function Trazabilidad() {
           Filtrar
         </button>
         <button
-          onClick={() => { setFiltroEstado(''); setFiltroTipo(''); cargar() }}
+          onClick={() => { setFiltroEstado(''); setFiltroTipo(''); setPage(1); cargar() }}
           className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
         >
           Limpiar
@@ -131,7 +137,7 @@ function Trazabilidad() {
                 </tr>
               </thead>
               <tbody>
-                {novedades.map((n) => {
+                {paginadas.map((n) => {
                   const cfg = ESTADO_CONFIG[n.estadoValidacion] ?? { type: 'default', label: n.estadoValidacion }
                   return (
                     <tr key={n.id} className="border-b border-slate-100 hover:bg-slate-50">
@@ -176,6 +182,7 @@ function Trazabilidad() {
           </div>
         )}
       </div>
+      {!cargando && <Pagination page={page} totalPages={totalPages} totalItems={novedades.length} pageSize={PAGE_SIZE} onChange={setPage} />}
     </section>
   )
 }
