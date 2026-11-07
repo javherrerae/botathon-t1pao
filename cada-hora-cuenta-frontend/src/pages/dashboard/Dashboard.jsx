@@ -72,10 +72,10 @@ function Dashboard() {
           <p className="text-sm font-semibold text-[#003366]">TELETÓN · GESTIÓN NACIONAL</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-900">Dashboard nacional</h1>
           <p className="mt-1 text-slate-500">
-            Periodo: {resumen.periodoUltimo?.slice(0, 7)} · datos Blue Prism simulados
+            Periodo: {resumen.periodoUltimo?.slice(0, 7)} · datos desde Blue Prism 
           </p>
         </div>
-        <Badge type="warning">Datos simulados</Badge>
+        <Badge type="warning">Datos importados de Blue Prism</Badge>
       </div>
 
       <section aria-label="Indicadores nacionales" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
